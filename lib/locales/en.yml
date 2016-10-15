@@ -1,0 +1,4 @@
+en:
+  urls_missing: `urls` parameter missing
+  urls_not_array: `urls` parameter must be an array
+  urls_empty: `urls` parameter must not be empty
