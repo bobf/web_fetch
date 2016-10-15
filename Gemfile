@@ -5,7 +5,7 @@ gem 'reel'
 gem 'hanami-router'
 gem 'rack'
 gem 'i18n'
+gem 'unirest'
 
 gem 'rspec'
-gem 'unirest'
 gem 'byebug'
