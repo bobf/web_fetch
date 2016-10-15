@@ -1,0 +1,12 @@
+# Mac finder artefacts
+.DS_Store
+
+# vim artefacts
+**.swp
+
+# Emacs stuff
+*~
+#*#
+*#
+#*
+.#*
