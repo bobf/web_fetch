@@ -1,9 +1,10 @@
-require 'celluloid/current'
-require 'celluloid/io'
+require 'eventmachine'
+require 'evma_httpserver'
 require 'i18n'
 require 'json'
 require 'digest'
 require 'securerandom'
+require 'unirest'
 
 I18n.load_path = Dir['lib/locales/*.yml']
 I18n.backend.load_translations

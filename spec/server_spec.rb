@@ -5,12 +5,6 @@ describe WebFetch::Server do
   let(:host) { 'localhost' }
   let(:host_uri) { "http://#{host}:#{port}" }
 
-  before(:all) do
-    # TODO: Drop and restart the test server for each spec, otherwise any
-    # single failure will cause all subsequent specs to fail.
-    described_class.new('localhost', 8089)
-  end
-
   it 'accepts HTTP connections' do
     response = get(host_uri) 
     expect(response.code).to eql 200

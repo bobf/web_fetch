@@ -1,8 +1,4 @@
 describe WebFetch::Client do
-  before(:all) do
-    WebFetch::Server.new('localhost', 8089)
-  end
-
   let(:client) { described_class.new('localhost', 8089) }
 
   it 'can be instantiated with host and port params' do

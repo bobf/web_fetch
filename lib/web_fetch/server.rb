@@ -1,33 +1,41 @@
-require 'reel'
-
 module WebFetch
-  class Server < Reel::Server::HTTP
-    def initialize(host, port)
-      super(host, port, &method(:on_connection))
-      @router = Router.new
+  class Server < EM::Connection
+    include EM::HttpServer
+
+     def post_init
+       super
+       @router = Router.new
+       no_environment_strings
+     end
+
+    def process_http_request
+      # the http request details are available via the following instance variables:
+      #   @http_protocol
+      #   @http_request_method
+      #   @http_cookie
+      #   @http_if_none_match
+      #   @http_content_type
+      #   @http_path_info
+      #   @http_request_uri
+      #   @http_query_string
+      #   @http_post_content
+      #   @http_headers
+      status, payload = @router.route(
+        @http_request_uri, method: @http_request_method,
+                           query_string: query_string)
+
+      response = EM::DelegatedHttpResponse.new(self)
+      response.status = status
+      response.headers['Content-Type'] = 'application/json'
+      response.content = payload
+      response.send_response
     end
 
-    private
-
-    def on_connection(connection)
-      connection.each_request do |request|
-        handle_request(request)
-      end
-    end
-
-    def handle_request(request)
-      response = @router.route(
-        request.url, method: request.method,
-                     query_string: query_string(request))
-
-      request.respond(*response)
-    end
-
-    def query_string(request)
-      if request.method == 'POST'
-        request.body.to_s
+    def query_string
+      if @http_request_method == 'POST'
+        @http_post_content
       else
-        request.query_string
+        @http_query_string
       end
     end
   end
