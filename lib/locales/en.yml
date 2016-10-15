@@ -1,4 +1,12 @@
 en:
-  urls_missing: `urls` parameter missing
-  urls_not_array: `urls` parameter must be an array
-  urls_empty: `urls` parameter must not be empty
+  requests_missing: "`requests` parameter missing"
+  requests_not_array: "`requests` parameter must be an array"
+  requests_empty: "`requests` parameter must not be empty"
+  missing_url: "All `requests` parameters must contain a URL"
+  bad_json: "`json` parameter could not be parsed as valid JSON"
+
+  hash_or_uid_but_not_both: "Cannot retrieve by both `uid` and `hash`"
+  missing_hash_and_uid: "Must pass either `uid` or `hash` to retrieve"
+
+  uid_not_found: "Provided `uid` has not yet been requested"
+  hash_not_found: "Provided `hash` has not yet been requested"
