@@ -3,7 +3,7 @@ module WebFetch
   class Fetcher
     include Validatable
 
-    HASHABLE_KEYS = [:url].freeze
+    HASHABLE_KEYS = [:url, :query_string, :headers, :method].freeze
 
     def initialize(params)
       @requests = params[:requests]
