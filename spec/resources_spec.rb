@@ -3,7 +3,8 @@ describe WebFetch::Resources do
 
   describe '.root' do
     it 'responds with application name' do
-      expect(described_class.root(nil)).to eql(status: 200, payload: 'WebFetch')
+      expect(described_class.root(nil))
+        .to eql(status: 200, payload: { application: 'WebFetch' })
     end
   end
 
@@ -17,9 +18,8 @@ describe WebFetch::Resources do
       expect(result[:status]).to eql 200
     end
 
-    it 'responds with json-encoded hash' do
-      json = result[:payload]
-      expect(JSON.parse(json)).to be_a Hash
+    it 'responds with hash' do
+      expect(result[:payload]).to be_a Hash
     end
   end
 
@@ -27,14 +27,14 @@ describe WebFetch::Resources do
     it 'gives 404 not found when unrecognised uid requested' do
       result = described_class.retrieve(uid: '123', _server: server)
       expect(result[:status]).to eql 404
-      error = JSON.parse(result[:payload])['error']
+      error = result[:payload][:error]
       expect(error).to eql I18n.t(:uid_not_found)
     end
 
     it 'gives 404 not found when unrecognised hash requested' do
       result = described_class.retrieve(hash: 'abc', _server: server)
       expect(result[:status]).to eql 404
-      error = JSON.parse(result[:payload])['error']
+      error = result[:payload][:error]
       expect(error).to eql I18n.t(:hash_not_found)
     end
   end

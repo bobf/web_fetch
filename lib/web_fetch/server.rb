@@ -32,7 +32,7 @@ module WebFetch
       if result[:deferred].nil?
         response.status = result[:status]
         response.headers['Content-Type'] = 'application/json'
-        response.content = result[:payload]
+        response.content = JSON.dump(result[:payload])
         response.send_response
       else
         wait_for_response(result[:deferred], response)

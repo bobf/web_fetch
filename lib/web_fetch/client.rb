@@ -31,7 +31,7 @@ module WebFetch
       rescue Errno::ECONNREFUSED
         return false
       end
-      response.code == 200 && response.body == 'WebFetch'
+      response.code == 200 && response.body['application'] == 'WebFetch'
     end
 
     def fetch(requests)

@@ -8,7 +8,7 @@ describe WebFetch::Server do
   it 'accepts HTTP connections' do
     response = get(host_uri) 
     expect(response.code).to eql 200
-    expect(response.body).to eql "WebFetch"
+    expect(response.body['application']).to eql "WebFetch"
   end
 
   describe '/fetch' do
