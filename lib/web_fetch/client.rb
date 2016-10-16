@@ -1,5 +1,7 @@
 module WebFetch
   class Client
+    include Helpers
+
     def initialize(host, port, options = {})
       @host = host
       @port = port
@@ -62,22 +64,17 @@ module WebFetch
 
     private
 
-    def symbolize(obj)
-      # >:)
-      JSON.parse(JSON.dump(obj), symbolize_names: true)
-    end
-
     def base_uri
       "http://#{@host}:#{@port}"
     end
 
-    def get(endpoint, **params)
+    def get(endpoint, params = {})
       Unirest.get("#{base_uri}/#{endpoint}",
                   headers: headers,
                   parameters: params)
     end
 
-    def post(endpoint, params)
+    def post(endpoint, params = {})
       Unirest.post("#{base_uri}/#{endpoint}",
                   headers: headers,
                   parameters: params)

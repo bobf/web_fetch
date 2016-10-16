@@ -4,12 +4,15 @@ module WebFetch
     
     HASHABLE_KEYS = [:url]
 
-    def initialize(options = {})
-      @requests = options[:requests]
+    def initialize(params)
+      @requests = params[:requests]
+      @server = params[:_server]
     end
 
     def start
-      { requests: tag_requests }
+      tagged = { requests: tag_requests }
+      @server.gather(tagged[:requests])
+      tagged
     end
 
     private

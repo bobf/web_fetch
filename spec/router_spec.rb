@@ -7,7 +7,7 @@ describe WebFetch::Router do
 
   describe '#route' do
     it 'provides a route to GET /' do
-      expect(router.route('/')).to eql [200, 'WebFetch']
+      expect(router.route('/')).to eql(status: 200, payload: 'WebFetch')
     end
 
     it 'provides a route to POST /fetch' do
@@ -21,7 +21,7 @@ describe WebFetch::Router do
     end
 
     it 'decodes `json` parameter and merges into request params' do
-      json = { a: 10, b: [1, 2, 3] }
+      json = { a: 10, b: [1, 2, 3], _server: nil }
       expect(WebFetch::Resources).to receive(:fetch).with(json)
       router.route('/fetch',
                    method: 'POST',
