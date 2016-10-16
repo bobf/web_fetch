@@ -17,7 +17,7 @@ module WebFetch
       begin
         merge_json!(params)
       rescue JSON::ParserError
-        return [400, I18n.t(:bad_json)] 
+        return { status: 400, payload: I18n.t(:bad_json) }
       end
       params = symbolize(params)
       params[:_server] = options[:server]
