@@ -1,4 +1,5 @@
 module WebFetch
+  # Rudimentary global storage for responses
   class Storage
     @_storage = {}
 

@@ -1,39 +1,24 @@
 module WebFetch
+  # Web server that accepts requests to fetch and retrieve external HTTP
+  # requests
   class Server < EM::Connection
     attr_reader :storage
 
     include EM::HttpServer
 
-     def post_init
-       super
-       @router = Router.new
-       @storage = Storage
-       no_environment_strings
-     end
+    def post_init
+      super
+      @router = Router.new
+      @storage = Storage
+      no_environment_strings
+    end
 
     def process_http_request
-      # the http request details are available via the following instance variables:
-      #   @http_protocol
-      #   @http_request_method
-      #   @http_cookie
-      #   @http_if_none_match
-      #   @http_content_type
-      #   @http_path_info
-      #   @http_request_uri
-      #   @http_query_string
-      #   @http_post_content
-      #   @http_headers
-      result = @router.route(
-        @http_request_uri, method: @http_request_method,
-                           query_string: query_string,
-                           server: self)
+      result = @router.route(@http_request_uri, request_params)
       response = EM::DelegatedHttpResponse.new(self)
 
       if result[:deferred].nil?
-        response.status = result[:status]
-        response.headers['Content-Type'] = 'application/json'
-        response.content = JSON.dump(result[:payload])
-        response.send_response
+        respond_immediately(result, response)
       else
         wait_for_response(result[:deferred], response)
       end
@@ -49,6 +34,12 @@ module WebFetch
 
     private
 
+    def request_params
+      { method: @http_request_method,
+        query_string: query_string,
+        server: self }
+    end
+
     def query_string
       if @http_request_method == 'POST'
         @http_post_content
@@ -57,51 +48,68 @@ module WebFetch
       end
     end
 
+    def respond_immediately(result, response)
+      response.status = result[:status]
+      response.headers['Content-Type'] = 'application/json'
+      response.content = JSON.dump(result[:payload])
+      response.send_response
+    end
+
     def wait_for_response(deferred, response)
       deferred[:http].callback { deferred[:succeeded] = true }
       deferred[:http].errback { deferred[:failed] = true }
+      tick_loop(deferred, response)
+    end
+
+    def tick_loop(deferred, response)
       # XXX There may be a much nicer way to wait for an async task to complete
       # before returning a response but I couldn't figure it out, so I used
       # EM.tick_loop which effectively does the same as a Twisted deferred
       # callback chain, just much more explicitly.
-      tickloop = EM.tick_loop do
-        if deferred[:succeeded] 
-          response.status = 200
-          response.content = JSON.dump(success(deferred))
-          response.send_response
+      EM.tick_loop do
+        if deferred[:succeeded]
+          succeed(deferred, response)
           :stop
         elsif deferred[:failed]
-          response.status = 200
-          response.content = JSON.dump(failure(deferred))
-          response.send_response
+          fail_(deferred, response)
           :stop
         end
       end
     end
 
+    def succeed(deferred, response)
+      response.status = 200
+      response.content = JSON.dump(success(deferred))
+      response.send_response
+    end
+
     def success(deferred)
       result = deferred[:http]
       { response: {
-          success: true,
-          body: result.response,
-          headers: result.headers,
-          status: result.response_header.status
-        },
-        uid: deferred[:uid]
-      }
+        success: true,
+        body: result.response,
+        headers: result.headers,
+        status: result.response_header.status
+      },
+        uid: deferred[:uid] }
+    end
+
+    def fail_(deferred, response)
+      response.status = 200
+      response.content = JSON.dump(failure(deferred))
+      response.send_response
     end
 
     def failure(deferred)
       result = deferred[:http]
       { response: {
-          success: false,
-          body: result.response,
-          headers: result.headers,
-          status: result.response_header.status,
-          error: (result.error.inspect unless result.error.nil?)
-        },
-        uid: deferred[:uid]
-      }
+        success: false,
+        body: result.response,
+        headers: result.headers,
+        status: result.response_header.status,
+        error: (result.error.inspect unless result.error.nil?)
+      },
+        uid: deferred[:uid] }
     end
   end
 end

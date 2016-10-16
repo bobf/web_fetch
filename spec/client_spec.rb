@@ -19,7 +19,7 @@ describe WebFetch::Client do
   describe '#fetch' do
     it 'makes `fetch` requests to a running server' do
       result = client.fetch([{ url: 'http://blah.blah/success' }])
-      expect(result.first[:uid]).to_not be_nil 
+      expect(result.first[:uid]).to_not be_nil
     end
   end
 
@@ -35,7 +35,7 @@ describe WebFetch::Client do
     end
 
     it 'returns nil for non-requested items' do
-      result = client.fetch([{ url: 'http://blah.blah/success' }])
+      client.fetch([{ url: 'http://blah.blah/success' }])
 
       retrieved = client.retrieve_by_uid('lalalala')
       expect(retrieved).to be_nil

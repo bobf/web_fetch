@@ -1,8 +1,9 @@
 module WebFetch
+  # Handles requests to fetch URLs and delegates to the EventMachine web server
   class Fetcher
     include Validatable
-    
-    HASHABLE_KEYS = [:url]
+
+    HASHABLE_KEYS = [:url].freeze
 
     def initialize(params)
       @requests = params[:requests]
@@ -18,13 +19,26 @@ module WebFetch
     private
 
     def validate
-      error(:requests_missing) if @requests.nil?
-      error(:requests_not_array) if (!@requests.nil? &&
-                                     !@requests.is_a?(Array))
-      error(:requests_empty) if (@requests.is_a?(Array) &&
-                                 @requests.length == 0)
-      error(:missing_url) if (@requests.is_a?(Array) &&
-                              @requests.any? { |req| req[:url].nil? })
+      error(:requests_missing) if requests_missing?
+      error(:requests_not_array) if requests_not_array?
+      error(:requests_empty) if requests_empty?
+      error(:missing_url) if missing_url?
+    end
+
+    def requests_missing?
+      @requests.nil?
+    end
+
+    def requests_not_array?
+      !@requests.nil? && !@requests.is_a?(Array)
+    end
+
+    def requests_empty?
+      @requests.is_a?(Array) && @requests.length.zero?
+    end
+
+    def missing_url?
+      @requests.is_a?(Array) && @requests.any? { |req| req[:url].nil? }
     end
 
     def tag_requests

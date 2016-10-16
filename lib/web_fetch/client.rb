@@ -1,4 +1,6 @@
 module WebFetch
+  # Client to be used in application code. Capable of spawning a server and
+  # interacting with it to fetch requests and retrieve them
   class Client
     include Helpers
 
@@ -12,9 +14,7 @@ module WebFetch
       # Will block until process is responsive
       process = spawn(host, port, options)
       client = new(host, port, process: process)
-      while not client.alive?
-        sleep 0.1
-      end
+      sleep 0.1 until client.alive?
       client
     end
 
@@ -35,11 +35,9 @@ module WebFetch
     end
 
     def fetch(requests)
-      json = JSON.dump({ requests: requests })
+      json = JSON.dump(requests: requests)
       response = post('fetch', json: json)
-      if response.code == 200
-        symbolize(response.body['requests'])
-      end
+      symbolize(response.body['requests']) if response.code == 200
     end
 
     def retrieve_by_uid(uid)
@@ -54,7 +52,7 @@ module WebFetch
     class << self
       def spawn(host, port, options)
         path = options.fetch(:path, 'bin/web_fetch_server')
-        process = ChildProcess.build(path, '--host', host, '--port', "#{port}")
+        process = ChildProcess.build(path, '--host', host, '--port', port.to_s)
         process.environment['RUBYLIB'] = 'lib/'
         process.io.inherit!
         process.start
@@ -76,8 +74,8 @@ module WebFetch
 
     def post(endpoint, params = {})
       Unirest.post("#{base_uri}/#{endpoint}",
-                  headers: headers,
-                  parameters: params)
+                   headers: headers,
+                   parameters: params)
     end
 
     def headers

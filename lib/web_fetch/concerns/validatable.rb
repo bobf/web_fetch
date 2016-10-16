@@ -1,11 +1,12 @@
 module WebFetch
+  # Provides boilerplate for a validatable model
   module Validatable
     attr_reader :errors
 
     def valid?
       @errors = []
       validate
-      @errors.empty? 
+      @errors.empty?
     end
 
     private
