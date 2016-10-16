@@ -54,6 +54,25 @@ describe WebFetch::Fetcher do
       expect(result[:requests].first[:hash]).to eql Digest.hexencode(hash)
     end
 
+    it 'respects url, headers, http method and query when calculating sha1' do
+      req1 = { url: 'http://blah', query_string: 'a=1',
+               headers: { 'Content-Type' => 'whatever' } }
+      req2 = { url: 'http://blah', query_string: 'b=2',
+               headers: { 'Content-Type' => 'whatever' } }
+      req3 = { url: 'http://hello', query_string: 'a=1',
+               headers: { 'Content-Type' => 'whatever' } }
+      req4 = { url: 'http://blah', query_string: 'a=1',
+               headers: { 'Content-Type' => 'hello' } }
+      req5 = { url: 'http://blah', query_string: 'a=1',
+               headers: { 'Content-Type' => 'hello' },
+               method: 'PUT' }
+      results = [req1, req2, req3, req4, req5].map do |req|
+        described_class.new(requests: [req], _server: server).start
+      end
+      hashes = results.map { |res| res[:requests].first[:hash] }
+      expect(hashes.uniq.length).to eql 5
+    end
+
     it 'returns a hash containing unique IDs for requests' do
       result = described_class.new(valid_params).start
       uid1 = result[:requests][0][:uid]
