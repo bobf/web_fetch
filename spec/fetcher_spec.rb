@@ -1,9 +1,12 @@
 describe WebFetch::Fetcher do
+  let(:server) { WebFetch::MockServer.new }
+
   let(:valid_params) do
     { requests: [
         { url: 'http://localhost:8089' },
         { url: 'http://remotehost:8089' }
-      ]
+      ],
+      _server: server
     }
   end
 
@@ -14,7 +17,7 @@ describe WebFetch::Fetcher do
   describe 'validation' do
     context 'invalid' do
       it 'is invalid if `requests` parameter is not passed' do
-        fetcher = described_class.new
+        fetcher = described_class.new({})
         expect(fetcher.valid?).to be false
         expect(fetcher.errors).to include I18n.t(:requests_missing)
       end
@@ -63,7 +66,8 @@ describe WebFetch::Fetcher do
       it 'is included in response' do
         # Ensure that the requester can embed their own identifiers to link to
         # the uid of the delegated request
-        params = { requests: [ url: '-', bob: 'hello' ] }
+        params = { requests: [ url: '-', bob: 'hello' ],
+                   _server: server }
         result = described_class.new(params).start
         expect(result[:requests].first[:request][:bob]).to eql 'hello'
       end
@@ -72,10 +76,12 @@ describe WebFetch::Fetcher do
         # Ensure that only pertinent values are used to compute hash (i.e.
         # adding auxiliary data will still allow retrieval by hash for
         # otherwise duplicate requests
-        params1 = { requests: [ url: 'http://blah', bob: 'hello' ] }
+        params1 = { requests: [ url: 'http://blah', bob: 'hello' ],
+                    _server: server }
         result1 = described_class.new(params1).start
 
-        params2 = { requests: [ url: 'http://blah', not_bob: 'good bye' ] }
+        params2 = { requests: [ url: 'http://blah', not_bob: 'good bye' ],
+                    _server: server }
         result2 = described_class.new(params2).start
         expect(result1[:requests][0][:hash]).to eql result2[:requests][0][:hash]
       end

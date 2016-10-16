@@ -7,10 +7,13 @@ module WebFetch
     def initialize(params)
       @uid = params[:uid]
       @hash = params[:hash]
+      @server = params[:_server]
     end
 
     def find
-      not_found
+      stored = @server.storage.fetch(@uid)
+      return not_found if stored.nil?
+      stored
     end
 
     private

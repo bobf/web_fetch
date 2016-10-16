@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'eventmachine'
   s.add_dependency 'eventmachine_httpserver'
+  s.add_dependency 'em-http-request'
   s.add_dependency 'hanami-router'
   s.add_dependency 'i18n'
   s.add_dependency 'rack'
@@ -20,4 +21,5 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'byebug'
+  s.add_development_dependency 'webmock'
 end

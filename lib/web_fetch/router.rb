@@ -3,6 +3,8 @@ require 'rack/utils'
 
 module WebFetch
   class Router
+    include Helpers
+
     def initialize
       @router = setup
     end
@@ -17,6 +19,8 @@ module WebFetch
       rescue JSON::ParserError
         return [400, I18n.t(:bad_json)] 
       end
+      params = symbolize(params)
+      params[:_server] = options[:server]
       @router.recognize(url, method: method).call(params)
     end
 
@@ -28,9 +32,17 @@ module WebFetch
       end
 
       Hanami::Router.new do
-        get '/', to: ->(params) { resource_finder.call(:root, params) }
-        post '/fetch', to: ->(params) { resource_finder.call(:fetch, params) }
-        get '/retrieve', to: ->(params) { resource_finder.call(:retrieve, params) }
+        get '/', to: ->(params) do
+          resource_finder.call(:root, params)
+        end
+
+        post '/fetch', to: ->(params) do
+          resource_finder.call(:fetch, params)
+        end
+
+        get '/retrieve', to: ->(params) do
+          resource_finder.call(:retrieve, params)
+        end
       end
     end
 

@@ -1,4 +1,5 @@
 describe WebFetch::Retriever do
+  let(:server) { WebFetch::MockServer.new }
   let(:valid_params) { { uid: 'abc123' } }
 
   it 'is initialisable with params' do
@@ -35,21 +36,33 @@ describe WebFetch::Retriever do
 
   describe '#find' do
     it 'returns `nil` when given uid has not been requested' do
-      retriever = described_class.new(uid: 'nope')
+      retriever = described_class.new(uid: 'nope', _server: server)
       expect(retriever.find).to be_nil
     end
 
     it 'returns `nil` when given hash has not been requested' do
-      retriever = described_class.new(hash: 'also nope')
+      retriever = described_class.new(hash: 'also nope', _server: server)
       expect(retriever.find).to be_nil
     end
 
     it 'returns payload when request has been retrieved' do
-      fetcher = WebFetch::Fetcher.new({ requests: [{ url: 'http://localhost:8089' }] })
+      # This test is somewhat useless as we have to mock the behaviour of our
+      # fake Server instance a little too much (since the actual Server object
+      # we're interested in exists in a separate EventMachine thread while we
+      # run our tests). The full stack is tested by the Client specs, however.
+      url = 'http://blah.blah/success'
+      stub_request(:any, url)
+
+      fetcher = WebFetch::Fetcher.new(requests: [{ url: url }],
+                                      _server: server)
       response = fetcher.start
-      retriever = described_class.new(uid: response[:requests].first[:uid])
-      pending 'No way to make this pass until back end is implemented'
-      expect(retriever.find[:body]).to eql 'hmm'
+      uid = response[:requests].first[:uid]
+      expect(server).to receive(:storage)
+        .and_return({ uid => { body: 'fake body'} })
+
+      retriever = described_class.new(uid: uid,
+                                      _server: server)
+      expect(retriever.find[:body]).to eql 'fake body'
     end
   end
 end
