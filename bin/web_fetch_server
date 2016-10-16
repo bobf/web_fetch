@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+options = { host: 'localhost', port: '60089' }
+OptionParser.new do |opt|
+  opt.on('--host localhost') { |o| options[:host] = o }
+  opt.on('--port 60089') { |o| options[:port] = o }
+end.parse!
+
+require 'web_fetch'
+EM.run do
+  EM.start_server options[:host], options[:port].to_i, WebFetch::Server
+end
