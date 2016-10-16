@@ -35,4 +35,21 @@ describe WebFetch::Client do
       expect(retrieved).to be_nil
     end
   end
+
+  describe '#create' do
+    it 'spawns a server and returns a client able to connect' do
+      client = described_class.create('localhost', 8077)
+      expect(client.alive?).to be true
+      client.stop
+    end
+  end
+
+  describe '#stop' do
+    it 'can spawn a server and stop the process when needed' do
+      client = described_class.create('localhost', 8077)
+      expect(client.alive?).to be true
+      client.stop
+      expect(client.alive?).to be false
+    end
+  end
 end

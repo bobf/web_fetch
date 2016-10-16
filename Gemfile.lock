@@ -3,9 +3,12 @@ GEM
   specs:
     addressable (2.3.8)
     byebug (9.0.5)
+    childprocess (0.5.9)
+      ffi (~> 1.0, >= 1.0.11)
     diff-lcs (1.2.5)
     eventmachine (1.2.0.1)
     eventmachine_httpserver (0.2.1)
+    ffi (1.9.14)
     hanami-router (0.7.0)
       hanami-utils (~> 0.8)
       http_router (~> 0.11)
@@ -45,6 +48,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  childprocess
   eventmachine
   eventmachine_httpserver
   hanami-router

@@ -5,6 +5,7 @@ require 'json'
 require 'digest'
 require 'securerandom'
 require 'unirest'
+require 'childprocess'
 
 I18n.load_path = Dir['lib/locales/*.yml']
 I18n.backend.load_translations
