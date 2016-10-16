@@ -20,13 +20,13 @@ describe WebFetch::Retriever do
     end
 
     context 'invalid' do
-      it 'is invalid if both `hash` and `uid` given' do      
+      it 'is invalid if both `hash` and `uid` given' do
         retriever = described_class.new(hash: 'def456', uid: 'abc123')
         expect(retriever.valid?).to be false
         expect(retriever.errors).to include I18n.t(:hash_or_uid_but_not_both)
       end
 
-      it 'is invalid if neither `hash` nor `uid` given' do      
+      it 'is invalid if neither `hash` nor `uid` given' do
         retriever = described_class.new({})
         expect(retriever.valid?).to be false
         expect(retriever.errors).to include I18n.t(:missing_hash_and_uid)
@@ -58,7 +58,7 @@ describe WebFetch::Retriever do
       response = fetcher.start
       uid = response[:requests].first[:uid]
       expect(server).to receive(:storage)
-        .and_return({ uid => { body: 'fake body'} })
+        .and_return(uid => { body: 'fake body' })
 
       retriever = described_class.new(uid: uid,
                                       _server: server)

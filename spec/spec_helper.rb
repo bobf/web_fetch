@@ -6,14 +6,14 @@ require 'webmock/rspec'
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # This is pretty ugly but seems to do the job
-puts "Starting test server"
+puts 'Starting test server'
 Thread.new do
   EM.run do
     EM.start_server 'localhost', 8089, WebFetch::Server
   end
 end
 waiting = true
-while waiting do
+while waiting
   begin
     res = Unirest.get('http://localhost:8089/')
   rescue Errno::ECONNREFUSED
@@ -22,7 +22,7 @@ while waiting do
   waiting = !res.nil? && res.code != 200
   sleep 0.1
 end
-puts "Test server started"
+puts 'Test server started'
 
 module WebFetch
   class MockServer

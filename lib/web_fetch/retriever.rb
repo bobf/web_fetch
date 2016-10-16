@@ -1,4 +1,5 @@
 module WebFetch
+  # Retrieves a fetched HTTP request
   class Retriever
     include Validatable
 

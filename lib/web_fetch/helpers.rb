@@ -1,4 +1,5 @@
 module WebFetch
+  # Shared code used throughout the application
   module Helpers
     def symbolize(obj)
       # >:)

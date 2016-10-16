@@ -1,6 +1,8 @@
 module WebFetch
+  # Glue between the router and the guts of the application; calls the relevant
+  # code and builds responses
   class Resources
-    def self.root(params)
+    def self.root(_params)
       { status: status(:ok), payload: { application: 'WebFetch' } }
     end
 
@@ -31,7 +33,7 @@ module WebFetch
         { ok: 200,
           unprocessable: 422,
           not_found: 404 }
-        .fetch(name)
+          .fetch(name)
       end
     end
   end
