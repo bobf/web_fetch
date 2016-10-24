@@ -1,6 +1,7 @@
 module WebFetch
-  # Handles requests to fetch URLs and delegates to the EventMachine web server
-  class Fetcher
+  # Handles requests to gather URLs and delegates to the EventMachine web
+  # server
+  class Gatherer
     include Validatable
 
     HASHABLE_KEYS = [:url, :query_string, :headers, :method].freeze

@@ -1,5 +1,5 @@
 module WebFetch
-  # Web server that accepts requests to fetch and retrieve external HTTP
+  # Web server that accepts requests to gather and retrieve external HTTP
   # requests
   class Server < EM::Connection
     attr_reader :storage

@@ -11,20 +11,20 @@ describe WebFetch::Server do
     expect(response.body['application']).to eql 'WebFetch'
   end
 
-  describe '/fetch' do
+  describe '/gather' do
     before(:each) do
       stub_request(:any, 'http://blah.blah/success')
       stub_request(:any, 'http://blah.blah/success?a=1')
     end
 
     it 'responds "Unprocessable Entity" when incomplete params passed' do
-      response = post("#{host_uri}/fetch", bob: ':(')
+      response = post("#{host_uri}/gather", bob: ':(')
       expect(response.code).to eql 422
     end
 
     it 'responds with uid for each request' do
       json = JSON.dump(requests: [{ url: 'http://blah.blah/success' }])
-      response = post("#{host_uri}/fetch", json: json)
+      response = post("#{host_uri}/gather", json: json)
       expect(response.body['requests'].first['uid']).to_not be_empty
     end
 
@@ -36,7 +36,7 @@ describe WebFetch::Server do
 
       responses = [params1, params2, params3].map do |params|
         json = JSON.dump(requests: [params])
-        post("#{host_uri}/fetch", json: json)
+        post("#{host_uri}/gather", json: json)
       end
       hashes = responses.map { |res| res.body['requests'].first['hash'] }
       expect(hashes.uniq.length).to eql 3
@@ -47,14 +47,14 @@ describe WebFetch::Server do
     it 'respects a given url' do
       stub = stub_request(:any, 'http://blah.blah/success')
       json = JSON.dump(requests: [{ url: 'http://blah.blah/success' }])
-      post("#{host_uri}/fetch", json: json)
+      post("#{host_uri}/gather", json: json)
       expect(stub).to have_been_requested
     end
 
     it 'respects given query parameters' do
       stub = stub_request(:any, 'http://blah.blah/success?a=1')
       json = JSON.dump(requests: [{ url: 'http://blah.blah/success?a=1' }])
-      post("#{host_uri}/fetch", json: json)
+      post("#{host_uri}/gather", json: json)
       expect(stub).to have_been_requested
     end
 
@@ -64,7 +64,7 @@ describe WebFetch::Server do
       params = { url: 'http://blah.blah/success',
                  headers: { 'Content-Type' => 'whatever' } }
       json = JSON.dump(requests: [params])
-      post("#{host_uri}/fetch", json: json)
+      post("#{host_uri}/gather", json: json)
       expect(stub).to have_been_requested
     end
 
@@ -72,7 +72,7 @@ describe WebFetch::Server do
       stub = stub_request(:post, 'http://blah.blah/success?a=1')
       json = JSON.dump(requests: [{ url: 'http://blah.blah/success?a=1',
                                     method: 'POST' }])
-      post("#{host_uri}/fetch", json: json)
+      post("#{host_uri}/gather", json: json)
       expect(stub).to have_been_requested
     end
   end
