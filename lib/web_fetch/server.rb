@@ -24,14 +24,16 @@ module WebFetch
       end
     end
 
-    def gather(requests)
-      requests.each do |request|
-        async_request = EM::HttpRequest.new(request[:request][:url])
-        method = request[:request].fetch(:method, 'GET').downcase.to_sym
+    def gather(targets)
+      targets.each do |target|
+        request = target[:request]
+        async_request = EM::HttpRequest.new(request[:url])
+        method = request.fetch(:method, 'GET').downcase.to_sym
         http = async_request.public_send(method,
-                                         head: request[:request][:headers])
-        @storage.store(request[:uid], uid: request[:uid],
-                                      http: http)
+                                         head: request[:headers],
+                                         query: request.fetch(:query, {}),
+                                         body: request.fetch(:body, nil))
+        @storage.store(target[:uid], uid: target[:uid], http: http)
       end
     end
 
