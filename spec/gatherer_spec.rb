@@ -1,4 +1,4 @@
-describe WebFetch::Fetcher do
+describe WebFetch::Gatherer do
   let(:server) { WebFetch::MockServer.new }
 
   let(:valid_params) do
@@ -16,27 +16,27 @@ describe WebFetch::Fetcher do
   describe 'validation' do
     context 'invalid' do
       it 'is invalid if `requests` parameter is not passed' do
-        fetcher = described_class.new({})
-        expect(fetcher.valid?).to be false
-        expect(fetcher.errors).to include I18n.t(:requests_missing)
+        gatherer = described_class.new({})
+        expect(gatherer.valid?).to be false
+        expect(gatherer.errors).to include I18n.t(:requests_missing)
       end
 
       it 'is invalid if `requests` is not an array parameter' do
-        fetcher = described_class.new(requests: 'hello')
-        expect(fetcher.valid?).to be false
-        expect(fetcher.errors).to include I18n.t(:requests_not_array)
+        gatherer = described_class.new(requests: 'hello')
+        expect(gatherer.valid?).to be false
+        expect(gatherer.errors).to include I18n.t(:requests_not_array)
       end
 
       it 'is invalid if `requests` is an empty array' do
-        fetcher = described_class.new(requests: [])
-        expect(fetcher.valid?).to be false
-        expect(fetcher.errors).to include I18n.t(:requests_empty)
+        gatherer = described_class.new(requests: [])
+        expect(gatherer.valid?).to be false
+        expect(gatherer.errors).to include I18n.t(:requests_empty)
       end
 
       it 'is invalid if `url` missing from any requests' do
-        fetcher = described_class.new(requests: [{ url: 'hello' }, {}])
-        expect(fetcher.valid?).to be false
-        expect(fetcher.errors).to include I18n.t(:missing_url)
+        gatherer = described_class.new(requests: [{ url: 'hello' }, {}])
+        expect(gatherer.valid?).to be false
+        expect(gatherer.errors).to include I18n.t(:missing_url)
       end
     end
 

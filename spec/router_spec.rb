@@ -11,9 +11,9 @@ describe WebFetch::Router do
         .to eql(status: 200, payload: { application: 'WebFetch' })
     end
 
-    it 'provides a route to POST /fetch' do
-      expect(WebFetch::Resources).to receive(:fetch).and_return('hello')
-      expect(router.route('/fetch', method: 'POST')).to eql 'hello'
+    it 'provides a route to POST /gather' do
+      expect(WebFetch::Resources).to receive(:gather).and_return('hello')
+      expect(router.route('/gather', method: 'POST')).to eql 'hello'
     end
 
     it 'provides a route to GET /retrieve' do
@@ -23,14 +23,14 @@ describe WebFetch::Router do
 
     it 'decodes `json` parameter and merges into request params' do
       json = { a: 10, b: [1, 2, 3], _server: nil }
-      expect(WebFetch::Resources).to receive(:fetch).with(json)
-      router.route('/fetch',
+      expect(WebFetch::Resources).to receive(:gather).with(json)
+      router.route('/gather',
                    method: 'POST',
                    query_string: "json=#{JSON.dump(json)}")
     end
 
     it 'returns appropriate response when invaid json provided' do
-      result = router.route('/fetch',
+      result = router.route('/gather',
                             method: 'POST',
                             query_string: 'json=uh oh :(')
       expect(result).to eql(status: 400, payload: I18n.t(:bad_json))

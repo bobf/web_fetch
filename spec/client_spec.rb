@@ -16,16 +16,16 @@ describe WebFetch::Client do
     end
   end
 
-  describe '#fetch' do
-    it 'makes `fetch` requests to a running server' do
-      result = client.fetch([{ url: 'http://blah.blah/success' }])
+  describe '#gather' do
+    it 'makes `gather` requests to a running server' do
+      result = client.gather([{ url: 'http://blah.blah/success' }])
       expect(result.first[:uid]).to_not be_nil
     end
   end
 
   describe '#retrieve_by_uid' do
-    it 'retrieves a fetched item' do
-      result = client.fetch([{ url: 'http://blah.blah/success' }])
+    it 'retrieves a gathered item' do
+      result = client.gather([{ url: 'http://blah.blah/success' }])
       uid = result.first[:uid]
 
       retrieved = client.retrieve_by_uid(uid)
@@ -35,7 +35,7 @@ describe WebFetch::Client do
     end
 
     it 'returns nil for non-requested items' do
-      client.fetch([{ url: 'http://blah.blah/success' }])
+      client.gather([{ url: 'http://blah.blah/success' }])
 
       retrieved = client.retrieve_by_uid('lalalala')
       expect(retrieved).to be_nil

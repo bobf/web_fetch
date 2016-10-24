@@ -8,13 +8,13 @@ describe WebFetch::Resources do
     end
   end
 
-  describe '.fetch' do
+  describe '.gather' do
     let(:result) do
-      described_class.fetch(requests: [{ url: 'http://google.com' }],
-                            _server: server)
+      described_class.gather(requests: [{ url: 'http://google.com' }],
+                             _server: server)
     end
 
-    it 'provides a `fetch` resource' do
+    it 'provides a `gather` resource' do
       expect(result[:status]).to eql 200
     end
 

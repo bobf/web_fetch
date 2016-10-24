@@ -34,8 +34,8 @@ module WebFetch
           resource_finder.call(:root, params)
         }
 
-        post '/fetch', to: lambda { |params|
-          resource_finder.call(:fetch, params)
+        post '/gather', to: lambda { |params|
+          resource_finder.call(:gather, params)
         }
 
         get '/retrieve', to: lambda { |params|

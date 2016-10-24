@@ -1,6 +1,6 @@
 module WebFetch
   # Client to be used in application code. Capable of spawning a server and
-  # interacting with it to fetch requests and retrieve them
+  # interacting with it to gather requests and retrieve them
   class Client
     include Helpers
 
@@ -34,9 +34,9 @@ module WebFetch
       response.code == 200 && response.body['application'] == 'WebFetch'
     end
 
-    def fetch(requests)
+    def gather(requests)
       json = JSON.dump(requests: requests)
-      response = post('fetch', json: json)
+      response = post('gather', json: json)
       symbolize(response.body['requests']) if response.code == 200
     end
 

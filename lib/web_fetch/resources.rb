@@ -6,12 +6,12 @@ module WebFetch
       { status: status(:ok), payload: { application: 'WebFetch' } }
     end
 
-    def self.fetch(params)
-      fetcher = Fetcher.new(params)
-      if fetcher.valid?
-        { status: status(:ok), payload: fetcher.start }
+    def self.gather(params)
+      gatherer = Gatherer.new(params)
+      if gatherer.valid?
+        { status: status(:ok), payload: gatherer.start }
       else
-        { status: status(:unprocessable), payload: { error: fetcher.errors } }
+        { status: status(:unprocessable), payload: { error: gatherer.errors } }
       end
     end
 

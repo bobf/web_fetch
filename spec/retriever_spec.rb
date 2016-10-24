@@ -53,9 +53,9 @@ describe WebFetch::Retriever do
       url = 'http://blah.blah/success'
       stub_request(:any, url)
 
-      fetcher = WebFetch::Fetcher.new(requests: [{ url: url }],
-                                      _server: server)
-      response = fetcher.start
+      gatherer = WebFetch::Gatherer.new(requests: [{ url: url }],
+                                        _server: server)
+      response = gatherer.start
       uid = response[:requests].first[:uid]
       expect(server).to receive(:storage)
         .and_return(uid => { body: 'fake body' })
