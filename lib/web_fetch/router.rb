@@ -49,6 +49,7 @@ module WebFetch
       params = Rack::Utils.parse_nested_query(options[:query_string])
       merge_json!(params)
       params = symbolize(params)
+      params.merge!(options[:post_data] || {})
       params[:_server] = options[:server]
       params
     end

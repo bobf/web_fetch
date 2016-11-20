@@ -15,11 +15,11 @@ end
 waiting = true
 while waiting
   begin
-    res = Unirest.get('http://localhost:8089/')
-  rescue Errno::ECONNREFUSED
+    res = Faraday.get('http://localhost:8089/')
+  rescue Faraday::ConnectionFailed
     res = nil
   end
-  waiting = !res.nil? && res.code != 200
+  waiting = !res.nil? && res.status != 200
   sleep 0.1
 end
 puts 'Test server started'

@@ -2,8 +2,6 @@ module WebFetch
   # Client to be used in application code. Capable of spawning a server and
   # interacting with it to gather requests and retrieve them
   class Client
-    include Helpers
-
     def initialize(host, port, options = {})
       @host = host
       @port = port
@@ -27,26 +25,25 @@ module WebFetch
 
     def alive?
       begin
-        response = get('/')
-      rescue Errno::ECONNREFUSED
+        response = get('')
+      rescue Faraday::ConnectionFailed
         return false
       end
-      response.code == 200 && response.body['application'] == 'WebFetch'
+      return false if !response.success?
+      JSON.parse(response.body)['application'] == 'WebFetch'
     end
 
     def gather(requests)
       json = JSON.dump(requests: requests)
-      response = post('gather', json: json)
-      symbolize(response.body['requests']) if response.code == 200
+      response = post('gather', json)
+      return nil unless response.success?
+      JSON.parse(response.body, symbolize_names: true)[:requests]
     end
 
     def retrieve_by_uid(uid)
       response = get('retrieve', uid: uid)
-      if response.code == 200
-        symbolize(response.body)
-      elsif response.code == 404
-        nil
-      end
+      return nil unless response.success?
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     class << self
@@ -67,19 +64,19 @@ module WebFetch
     end
 
     def get(endpoint, params = {})
-      Unirest.get("#{base_uri}/#{endpoint}",
-                  headers: headers,
-                  parameters: params)
+      conn = Faraday.new(url: base_uri)
+      conn.get do |request|
+        request.url "/#{endpoint}"
+        request.params.merge!(params)
+      end
     end
 
-    def post(endpoint, params = {})
-      Unirest.post("#{base_uri}/#{endpoint}",
-                   headers: headers,
-                   parameters: params)
-    end
-
-    def headers
-      { 'Accept' => 'application/json' }
+    def post(endpoint, body)
+      conn = Faraday.new(url: base_uri)
+      conn.post do |request|
+        request.url "/#{endpoint}"
+        request.body = body
+      end
     end
   end
 end

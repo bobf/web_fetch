@@ -41,16 +41,14 @@ module WebFetch
 
     def request_params
       { method: @http_request_method,
-        query_string: query_string,
+        query_string: @http_query_string,
+        post_data: post_data,
         server: self }
     end
 
-    def query_string
-      if @http_request_method == 'POST'
-        @http_post_content
-      else
-        @http_query_string
-      end
+    def post_data
+      return nil unless @http_post_content
+      JSON.parse(@http_post_content, symbolize_names: true)  
     end
 
     def respond_immediately(result, response)

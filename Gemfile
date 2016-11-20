@@ -7,7 +7,7 @@ gem 'em-http-request'
 gem 'hanami-router'
 gem 'rack'
 gem 'i18n'
-gem 'unirest'
+gem 'faraday'
 gem 'childprocess'
 
 gem 'rspec'
