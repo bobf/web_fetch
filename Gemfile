@@ -1,15 +1,3 @@
 source 'https://rubygems.org'
-ruby '2.2.3'
 
-gem 'eventmachine'
-gem 'eventmachine_httpserver'
-gem 'em-http-request'
-gem 'hanami-router'
-gem 'rack'
-gem 'i18n'
-gem 'faraday'
-gem 'childprocess'
-
-gem 'rspec'
-gem 'webmock'
-gem 'byebug'
+gemspec
