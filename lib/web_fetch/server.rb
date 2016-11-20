@@ -54,7 +54,7 @@ module WebFetch
     def respond_immediately(result, response)
       response.status = result[:status]
       response.headers['Content-Type'] = 'application/json'
-      response.content = JSON.dump(result[:payload])
+      response.content = result[:payload].to_json
       response.send_response
     end
 
