@@ -29,7 +29,7 @@ module WebFetch
       rescue Faraday::ConnectionFailed
         return false
       end
-      return false if !response.success?
+      return false unless response.success?
       JSON.parse(response.body)['application'] == 'WebFetch'
     end
 
@@ -46,7 +46,11 @@ module WebFetch
       # XXX Amusingly, a successful JSON-encoded response does not include the
       # trailing "} which results in invalid JSON. I very much enjoyed
       # debugging this on a Sunday afternoon.
-      body = response.body.end_with?('"}') ? response.body : response.body + '"}'
+      body = if response.body.end_with?('"}')
+               response.body
+             else
+               response.body + '"}'
+             end
       JSON.parse(body, symbolize_names: true)
     end
 
