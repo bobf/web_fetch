@@ -1,0 +1,115 @@
+swagger: '2.0'
+info:
+  title: WebFetch API
+  description: Asynchronously fetch HTTP entities
+  version: "0.0.1"
+schemes:
+  - http
+produces:
+  - application/json
+paths:
+  /:
+    get:
+      summary: Status
+      description: |
+        Identifies WebFetch server.
+      responses:
+        200:
+          description: An object with an application identifier
+          schema:
+            type: object
+            properties:
+              application:
+                type: string
+                description: WebFetch
+                
+  /gather:
+    post:
+      summary: Initiate fetching one or more HTTP entities.
+      description: |
+        Receives an array of HTTP entities as objects and returns an array of objects providing a unique identifier, a hash, and the original request parameters. The unique identifier can be used to retrieve the entity when it has completed downloading.
+      parameters:
+        - name: requests
+          in: body
+          description: HTTP entities to be gathered.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Request'
+      responses:
+        200:
+          description: An array of objects providing job IDs and original parameters.
+          schema:
+            $ref: '#/definitions/GatherResponse'
+              
+
+  /retrieve/{id}:
+    get:
+      summary: Retrieve a gathered HTTP entity.
+      description: |
+        Receives a unique identifier and returns the previously requested HTTP entity. This action will block until the entity has been successfully downloaded.
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: Unique identifier for HTTP entity.
+          required: true
+      responses:
+        200:
+          description: An object containing HTTP entity elements.
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Retrieved'
+    
+definitions:
+  Request:
+    type: object
+    properties:
+      url:
+        type: string
+        description: URL of desired HTTP entity.
+      method:
+        type: string
+        default: GET
+        description: HTTP method.
+      headers:
+        type: object
+        description: HTTP headers.
+      query:
+        type: object
+        description: Query parameters.
+      body:
+        type: string
+        description: HTTP body.
+  Retrieved:
+    type: object
+    properties:
+      response:
+        type: object
+        description: Requested HTTP entity elements.
+        properties:
+          success:
+            type: boolean
+          body:
+            type: string
+          headers:
+            type: object
+          status:
+            type: integer
+            
+  GatherResponse:
+    type: array
+    items:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Unique identifier for requested HTTP entity.
+        hash:
+          type: string
+          description: SHA1 hash of request based on url, query parameters, headers, method [currently this serves no purpose].
+        request:
+          type: object
+          description: Original requested HTTP parameters.
