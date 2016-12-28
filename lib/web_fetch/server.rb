@@ -48,7 +48,7 @@ module WebFetch
 
     def post_data
       return nil unless @http_post_content
-      JSON.parse(@http_post_content, symbolize_names: true)  
+      JSON.parse(@http_post_content, symbolize_names: true)
     end
 
     def respond_immediately(result, response)
