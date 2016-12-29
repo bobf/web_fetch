@@ -12,5 +12,11 @@ describe WebFetch::Storage do
       described_class.store(:key, :value)
       expect(described_class.fetch(:key)).to eql :value
     end
+
+    it 'removes item from storage after retrieval' do
+      described_class.store(:key, :value)
+      described_class.fetch(:key)
+      expect(described_class.fetch(:key)).to be_nil
+    end
   end
 end

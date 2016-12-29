@@ -8,7 +8,7 @@ module WebFetch
     end
 
     def self.fetch(key)
-      @_storage[key]
+      @_storage.delete(key)
     end
   end
 end
