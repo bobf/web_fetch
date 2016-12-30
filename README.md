@@ -10,6 +10,8 @@ This permits issuing multiple HTTP requests in parallel, in a fully
 encapsulated and external process, without having to resort to multi-threading,
 multi-processing, or complex non-blocking IO implementations.
 
+![WebFetch architecture](doc/web_fetch_architecture.png)
+
 ## Getting Started
 
 Although WebFetch runs as a web server and provides all functionality over a
