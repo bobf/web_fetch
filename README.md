@@ -82,13 +82,6 @@ To connect to an existing process, use `WebFetch::Client.new` rather than
 WebFetch::Client.new('localhost', 8087)
 ```
 
-Currently it is necessary to pass `RUBYLIB=lib` when starting the server
-(please fix this for me if you know how):
-
-``` bash
-RUBYLIB=lib/ bundle exec bin/web_fetch_server
-```
-
 The server will not [usually] output anything to STDOUT or STDERR and currently
 no logging is implemented.
 
