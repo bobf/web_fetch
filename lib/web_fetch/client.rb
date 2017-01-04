@@ -56,12 +56,17 @@ module WebFetch
 
     class << self
       def spawn(host, port, options)
-        path = options.fetch(:path, 'bin/web_fetch_server')
+        path = options.fetch(:path, standard_bin_file)
         process = ChildProcess.build(path, '--host', host, '--port', port.to_s)
-        process.environment['RUBYLIB'] = 'lib/'
         process.io.inherit!
         process.start
         process
+      end
+
+      private
+
+      def standard_bin_file
+        File.join(File.dirname(__dir__), '..', 'bin', 'web_fetch_server')
       end
     end
 
