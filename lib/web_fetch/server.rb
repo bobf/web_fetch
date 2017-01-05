@@ -90,7 +90,7 @@ module WebFetch
       result = deferred[:http]
       { response: {
         success: true,
-        body: result.response,
+        body: URI::encode(result.response),
         headers: result.headers,
         status: result.response_header.status
       },

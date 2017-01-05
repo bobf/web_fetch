@@ -43,15 +43,9 @@ module WebFetch
     def retrieve_by_uid(uid)
       response = get('retrieve', uid: uid)
       return nil unless response.success?
-      # XXX Amusingly, a successful JSON-encoded response does not include the
-      # trailing "} which results in invalid JSON. I very much enjoyed
-      # debugging this on a Sunday afternoon.
-      body = if response.body.end_with?('"}')
-               response.body
-             else
-               response.body + '"}'
-             end
-      JSON.parse(body, symbolize_names: true)
+      resp = JSON.parse(response.body, symbolize_names: true)
+      resp[:response][:body] = URI.decode(resp[:response][:body])
+      resp
     end
 
     class << self
