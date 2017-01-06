@@ -17,6 +17,8 @@ module WebFetch
       result = @router.route(@http_request_uri, request_params)
       response = EM::DelegatedHttpResponse.new(self)
 
+      default_headers(response)
+
       if result[:deferred].nil?
         respond_immediately(result, response)
       else
@@ -39,6 +41,17 @@ module WebFetch
 
     private
 
+    def compress(string)
+      ActiveSupport::Gzip.compress(string)
+    end
+
+    def default_headers(response)
+      response.headers['Content-Type'] = 'application/json; charset=utf-8'
+      response.headers['Cache-Control'] = 'max-age=0, private, must-revalidate'
+      response.headers['Content-Encoding'] = 'gzip'
+      response.headers['Vary'] = 'Accept-Encoding'
+    end
+
     def request_params
       { method: @http_request_method,
         query_string: @http_query_string,
@@ -53,8 +66,7 @@ module WebFetch
 
     def respond_immediately(result, response)
       response.status = result[:status]
-      response.headers['Content-Type'] = 'application/json'
-      response.content = result[:payload].to_json
+      response.content = compress(result[:payload].to_json)
       response.send_response
     end
 
@@ -82,7 +94,7 @@ module WebFetch
 
     def succeed(deferred, response)
       response.status = 200
-      response.content = JSON.dump(success(deferred))
+      response.content = compress(JSON.dump(success(deferred)))
       response.send_response
     end
 
@@ -90,7 +102,7 @@ module WebFetch
       result = deferred[:http]
       { response: {
         success: true,
-        body: URI::encode(result.response),
+        body: result.response,
         headers: result.headers,
         status: result.response_header.status
       },
@@ -99,7 +111,7 @@ module WebFetch
 
     def fail_(deferred, response)
       response.status = 200
-      response.content = JSON.dump(failure(deferred))
+      response.content = compress(JSON.dump(failure(deferred)))
       response.send_response
     end
 
