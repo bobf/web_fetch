@@ -9,9 +9,16 @@ require 'faraday'
 require 'childprocess'
 require 'active_support/gzip'
 
-I18n.load_path = Dir['lib/locales/*.yml']
-I18n.backend.load_translations
-I18n.config.available_locales = :en
+locales_path = File.expand_path('../../config/locales/*.yml', __FILE__)
+
+# Locales heavily
+if Gem.loaded_specs.key?('rails')
+  I18n.load_path += Dir[locales_path]
+else
+  I18n.load_path += Dir[locales_path]
+  I18n.backend.load_translations
+  I18n.config.available_locales = :en
+end
 
 require 'web_fetch/helpers'
 require 'web_fetch/concerns/validatable'
