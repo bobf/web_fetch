@@ -44,8 +44,6 @@ module WebFetch
       response = get('retrieve', uid: uid)
       return nil unless response.success?
       resp = JSON.parse(response.body, symbolize_names: true)
-      resp[:response][:body] = URI.decode(resp[:response][:body])
-      resp
     end
 
     class << self

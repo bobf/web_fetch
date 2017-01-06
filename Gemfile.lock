@@ -2,18 +2,26 @@ PATH
   remote: .
   specs:
     web_fetch (0.1.0)
+      activesupport (~> 4.0)
       childprocess (~> 0.5)
       em-http-request (~> 1.1)
       eventmachine (~> 1.0)
       eventmachine_httpserver (~> 0.2)
       faraday (~> 0.9)
       hanami-router (~> 0.7)
+      hanami-utils (= 0.8.0)
       i18n (~> 0.7)
       rack (~> 1.6)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (4.2.7.1)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
     addressable (2.3.8)
     byebug (9.0.5)
     childprocess (0.5.9)
@@ -30,9 +38,9 @@ GEM
       http_parser.rb (>= 0.6.0)
     em-socksify (0.3.1)
       eventmachine (>= 1.0.0.beta.4)
-    eventmachine (1.2.0.1)
+    eventmachine (1.2.1)
     eventmachine_httpserver (0.2.1)
-    faraday (0.9.2)
+    faraday (0.10.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.14)
     hanami-router (0.7.0)
@@ -46,6 +54,8 @@ GEM
       rack (>= 1.0.0)
       url_mount (~> 0.2.1)
     i18n (0.7.0)
+    json (1.8.3)
+    minitest (5.10.1)
     multipart-post (2.0.0)
     rack (1.6.5)
     rspec (3.5.0)
@@ -62,6 +72,9 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     safe_yaml (1.0.4)
+    thread_safe (0.3.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     url_mount (0.2.1)
       rack
     webmock (1.24.6)
@@ -79,4 +92,4 @@ DEPENDENCIES
   webmock (~> 1.24)
 
 BUNDLED WITH
-   1.12.5
+   1.13.6

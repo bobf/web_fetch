@@ -7,6 +7,7 @@ require 'digest'
 require 'securerandom'
 require 'faraday'
 require 'childprocess'
+require 'active_support/gzip'
 
 I18n.load_path = Dir['lib/locales/*.yml']
 I18n.backend.load_translations
