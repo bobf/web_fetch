@@ -1,14 +1,22 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'tmpdir'
 
-options = { host: 'localhost', port: '60089' }
+pidfile = File.join(Dir.tmpdir, 'web_fetch.pid')
+options = { host: 'localhost', port: '60089', pidfile: pidfile }
 OptionParser.new do |opt|
   opt.on('--host localhost') { |o| options[:host] = o }
   opt.on('--port 60089') { |o| options[:port] = o }
+  opt.on('--pidfile tmp/web_fetch.pid') { |o| options[:pidfile] = o }
 end.parse!
 
 require 'web_fetch'
+
+puts "pidfile at: #{File.expand_path(options[:pidfile])}"
+f = File.new(File.expand_path(options[:pidfile]), 'w+')
+f.write(Process.pid)
+f.close
 EM.run do
   EM.start_server options[:host], options[:port].to_i, WebFetch::Server
 end
