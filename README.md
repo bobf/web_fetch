@@ -109,3 +109,10 @@ identifier for a request, in which case you could do:
 client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 # [{:request=>{:url=>"http://foobar.baz", :my_unique_id=>"123-456-789"}, :hash=>"7c511911d16e1072363fa1653bdd93df65208901", :uid=>"1fb4ee7a-9fc0-4896-9af2-7cbdf234a468"}]
 ```
+
+## Running on a server.
+
+Check out /linux/init.d/web_fetch.  It should be placed within the bootup scripts on the server.
+
+Additionally make sure this processes pid is monitored and there a process to restart the server.
+It doesn't spawn workers or anything.
