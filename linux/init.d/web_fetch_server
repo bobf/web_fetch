@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides: APMLive dev web IO server
+# Provides: WebFetchServer
 # Required-Start: $network $local_fs $syslog
 # Required-Stop: $network $local_fs $syslog
 # Default-Start: 2 3 4 5
@@ -21,7 +21,7 @@ RUNUSER=deployer
 [[ -z ${USER+x} ]] && USER='root'
 GEMFILE="${APP_ROOT}/Gemfile"
 
-WEB_FETCH_OPTS = '--host localhost --port 8077 --pidfile $PID'
+WEB_FETCH_OPTS="--host localhost --port 8077 --pidfile $PID"
 
 COMMD="/usr/bin/sh /users/deployer/.bashrc && cd $APP_ROOT && bundle exec web_fetch_server $WEB_FETCH_OPTS &"
 
@@ -43,10 +43,6 @@ case ${1-help} in
  fi
  ;;
   stop)
- sig QUIT && exit 0
- echo >&2 "Not running"
- ;;
-  force-stop)
  sig TERM && exit 0
  echo >&2 "Not running"
  ;;
