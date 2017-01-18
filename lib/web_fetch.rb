@@ -1,7 +1,9 @@
 require 'eventmachine'
 require 'evma_httpserver'
 require 'em-http'
+require 'em-logger'
 require 'i18n'
+require 'logger'
 require 'json'
 require 'digest'
 require 'securerandom'
@@ -20,6 +22,7 @@ else
   I18n.config.available_locales = :en
 end
 
+require 'web_fetch/logger'
 require 'web_fetch/helpers'
 require 'web_fetch/concerns/validatable'
 require 'web_fetch/storage'

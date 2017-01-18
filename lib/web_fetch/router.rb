@@ -11,6 +11,7 @@ module WebFetch
     end
 
     def route(url, options = {})
+      @server = options[:server]
       options = { query_string: nil, method: 'GET' }.merge(options)
       method = options[:method].downcase.to_sym
       begin
@@ -26,7 +27,7 @@ module WebFetch
     # rubocop:disable Metrics/MethodLength
     def setup
       resource_finder = lambda do |name, env|
-        Resources.public_send(name, env)
+        Resources.public_send(name, @server, env)
       end
 
       Hanami::Router.new do
@@ -50,7 +51,6 @@ module WebFetch
       merge_json!(params)
       params = symbolize(params)
       params.merge!(options[:post_data] || {})
-      params[:_server] = options[:server]
       params
     end
 

@@ -5,10 +5,10 @@ module WebFetch
 
     attr_reader :not_found_error
 
-    def initialize(params)
+    def initialize(server, params)
       @uid = params[:uid]
       @hash = params[:hash]
-      @server = params[:_server]
+      @server = server
     end
 
     def find

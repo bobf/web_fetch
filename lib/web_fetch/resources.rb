@@ -2,12 +2,14 @@ module WebFetch
   # Glue between the router and the guts of the application; calls the relevant
   # code and builds responses
   class Resources
-    def self.root(_params)
+    def self.root(_server, params)
+      Logger.info("Root accessed")
       { status: status(:ok), payload: { application: 'WebFetch' } }
     end
 
-    def self.gather(params)
-      gatherer = Gatherer.new(params)
+    def self.gather(server, params)
+      Logger.info("Gathering: #{params}")
+      gatherer = Gatherer.new(server, params)
       if gatherer.valid?
         { status: status(:ok), payload: gatherer.start }
       else
@@ -15,8 +17,9 @@ module WebFetch
       end
     end
 
-    def self.retrieve(params)
-      retriever = Retriever.new(params)
+    def self.retrieve(server, params)
+      Logger.info("Retrieving: #{params}")
+      retriever = Retriever.new(server, params)
       return { status: status(:unprocessable),
                payload: { error: retriever.errors } } unless retriever.valid?
       found = retriever.find

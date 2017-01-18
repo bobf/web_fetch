@@ -112,7 +112,24 @@ client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 
 ## Running on a server.
 
-Check out /linux/init.d/web_fetch.  It should be placed within the bootup scripts on the server.
+See [linux/init.d/web_fetch](linux/init.d/web_fetch)
 
-Additionally make sure this processes pid is monitored and there a process to restart the server.
-It doesn't spawn workers or anything.
+It should be placed within the bootup scripts on the server.
+
+Additionally make sure the pid for this is monitored and there is a process to
+restart the server as WebFetch runs in a single process.
+
+## Logging
+
+WebFetch logs to STDERR by default. An alternative log file can be set either
+by passing `--log /path/to/logfile` to the command line server, or by passing
+`log: '/path/to/logfile'` to `WebFetch::Client.create`:
+
+```
+$ bin/web_fetch_server --log /tmp/web_fetch.log
+```
+
+```
+client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
+```
+>>>>>>> Implement logging and slight refactor

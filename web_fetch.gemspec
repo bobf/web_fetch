@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'eventmachine', '~> 1.0'
   s.add_dependency 'eventmachine_httpserver', '~> 0.2'
   s.add_dependency 'em-http-request', '~> 1.1'
+  s.add_dependency 'em-logger'
   s.add_dependency 'hanami-router', '~> 0.7'
   s.add_dependency 'hanami-utils', '0.8.0'
   s.add_dependency 'i18n', '~> 0.7'

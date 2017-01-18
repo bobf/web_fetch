@@ -5,36 +5,35 @@ describe WebFetch::Gatherer do
     { requests: [
       { url: 'http://localhost:8089' },
       { url: 'http://remotehost:8089' }
-    ],
-      _server: server }
+    ] }
   end
 
   it 'is initialisable with params' do
-    expect(described_class.new(valid_params)).to be_a described_class
+    expect(described_class.new(server, valid_params)).to be_a described_class
   end
 
   describe 'validation' do
     context 'invalid' do
       it 'is invalid if `requests` parameter is not passed' do
-        gatherer = described_class.new({})
+        gatherer = described_class.new(server, {})
         expect(gatherer.valid?).to be false
         expect(gatherer.errors).to include I18n.t(:requests_missing)
       end
 
       it 'is invalid if `requests` is not an array parameter' do
-        gatherer = described_class.new(requests: 'hello')
+        gatherer = described_class.new(server, requests: 'hello')
         expect(gatherer.valid?).to be false
         expect(gatherer.errors).to include I18n.t(:requests_not_array)
       end
 
       it 'is invalid if `requests` is an empty array' do
-        gatherer = described_class.new(requests: [])
+        gatherer = described_class.new(server, requests: [])
         expect(gatherer.valid?).to be false
         expect(gatherer.errors).to include I18n.t(:requests_empty)
       end
 
       it 'is invalid if `url` missing from any requests' do
-        gatherer = described_class.new(requests: [{ url: 'hello' }, {}])
+        gatherer = described_class.new(server, requests: [{ url: 'hello' }, {}])
         expect(gatherer.valid?).to be false
         expect(gatherer.errors).to include I18n.t(:missing_url)
       end
@@ -42,14 +41,14 @@ describe WebFetch::Gatherer do
 
     context 'valid' do
       it 'is valid when passed valid params' do
-        expect(described_class.new(valid_params).valid?).to be true
+        expect(described_class.new(server, valid_params).valid?).to be true
       end
     end
   end
 
   describe '#start' do
     it 'returns a hash containing sha1 hashes of requests' do
-      result = described_class.new(valid_params).start
+      result = described_class.new(server, valid_params).start
       hash = Digest::SHA1.new.digest(JSON.dump(valid_params[:requests].first))
       expect(result[:requests].first[:hash]).to eql Digest.hexencode(hash)
     end
@@ -67,14 +66,14 @@ describe WebFetch::Gatherer do
                headers: { 'Content-Type' => 'hello' },
                method: 'PUT' }
       results = [req1, req2, req3, req4, req5].map do |req|
-        described_class.new(requests: [req], _server: server).start
+        described_class.new(server, requests: [req], _server: server).start
       end
       hashes = results.map { |res| res[:requests].first[:hash] }
       expect(hashes.uniq.length).to eql 5
     end
 
     it 'returns a hash containing unique IDs for requests' do
-      result = described_class.new(valid_params).start
+      result = described_class.new(server, valid_params).start
       uid1 = result[:requests][0][:uid]
       uid2 = result[:requests][1][:uid]
       expect(uid1).to_not eql uid2
@@ -86,7 +85,7 @@ describe WebFetch::Gatherer do
         # the uid of the delegated request
         params = { requests: [url: '-', bob: 'hello'],
                    _server: server }
-        result = described_class.new(params).start
+        result = described_class.new(server, params).start
         expect(result[:requests].first[:request][:bob]).to eql 'hello'
       end
 
@@ -96,11 +95,11 @@ describe WebFetch::Gatherer do
         # otherwise duplicate requests
         params1 = { requests: [url: 'http://blah', bob: 'hello'],
                     _server: server }
-        result1 = described_class.new(params1).start
+        result1 = described_class.new(server, params1).start
 
         params2 = { requests: [url: 'http://blah', not_bob: 'good bye'],
                     _server: server }
-        result2 = described_class.new(params2).start
+        result2 = described_class.new(server, params2).start
         expect(result1[:requests][0][:hash]).to eql result2[:requests][0][:hash]
       end
     end

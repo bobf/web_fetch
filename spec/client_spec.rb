@@ -1,5 +1,5 @@
 describe WebFetch::Client do
-  let(:client) { described_class.new('localhost', 8089) }
+  let(:client) { described_class.new('localhost', 8089, log: File::NULL) }
 
   before(:each) do
     stub_request(:any, 'http://blah.blah/success')
@@ -44,7 +44,7 @@ describe WebFetch::Client do
 
   describe '#create' do
     it 'spawns a server and returns a client able to connect' do
-      client = described_class.create('localhost', 8077)
+      client = described_class.create('localhost', 8077, log: File::NULL)
       expect(client.alive?).to be true
       client.stop
     end
@@ -52,7 +52,7 @@ describe WebFetch::Client do
 
   describe '#stop' do
     it 'can spawn a server and stop the process when needed' do
-      client = described_class.create('localhost', 8077)
+      client = described_class.create('localhost', 8077, log: File::NULL)
       expect(client.alive?).to be true
       client.stop
       expect(client.alive?).to be false
