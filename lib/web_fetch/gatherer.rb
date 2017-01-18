@@ -8,9 +8,9 @@ module WebFetch
 
     HASHABLE_KEYS = %i[url query_string headers method].freeze
 
-    def initialize(params)
+    def initialize(server, params)
       @requests = params[:requests]
-      @server = params[:_server]
+      @server = server
     end
 
     def start

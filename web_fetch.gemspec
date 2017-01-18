@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '~> 4.0'
   s.add_dependency 'childprocess', '~> 0.5'
   s.add_dependency 'em-http-request', '~> 1.1'
+  s.add_dependency 'em-logger'
   s.add_dependency 'eventmachine', '~> 1.0'
   s.add_dependency 'eventmachine_httpserver', '~> 0.2'
   s.add_dependency 'faraday', '~> 0.9'

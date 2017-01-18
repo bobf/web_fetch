@@ -86,7 +86,21 @@ client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 # [{:request=>{:url=>"http://foobar.baz", :my_unique_id=>"123-456-789"}, :hash=>"7c511911d16e1072363fa1653bdd93df65208901", :uid=>"1fb4ee7a-9fc0-4896-9af2-7cbdf234a468"}]
 ```
 
-# Contributing
+## Logging
+
+WebFetch logs to STDERR by default. An alternative log file can be set either
+by passing `--log /path/to/logfile` to the command line server, or by passing
+`log: '/path/to/logfile'` to `WebFetch::Client.create`:
+
+```
+$ bin/web_fetch_server --log /tmp/web_fetch.log
+```
+
+```
+client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
+```
+
+## Contributing
 
 WebFetch uses `rspec` for testing:
 

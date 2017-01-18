@@ -9,14 +9,20 @@ OptionParser.new do |opt|
   opt.on('--host localhost') { |o| options[:host] = o }
   opt.on('--port 60089') { |o| options[:port] = o }
   opt.on('--pidfile tmp/web_fetch.pid') { |o| options[:pidfile] = o }
+  opt.on('--log /path/to/logfile (default: stderr)') { |o| options[:log] = o }
 end.parse!
 
 require 'web_fetch'
 
-puts "pidfile at: #{File.expand_path(options[:pidfile])}"
+WebFetch::Logger.set_log_path(options[:log])
+
 f = File.new(File.expand_path(options[:pidfile]), 'w+')
 f.write(Process.pid)
 f.close
+WebFetch::Logger.info("pidfile at: #{File.expand_path(options[:pidfile])}")
+
 EM.run do
-  EM.start_server options[:host], options[:port].to_i, WebFetch::Server
+  EM.start_server(options[:host],
+                  options[:port].to_i,
+                  WebFetch::Server)
 end

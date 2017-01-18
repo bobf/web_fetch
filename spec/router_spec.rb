@@ -24,17 +24,19 @@ describe WebFetch::Router do
     end
 
     it 'decodes `json` parameter and merges into request params' do
-      json = { a: 10, b: [1, 2, 3], _server: nil }
-      expect(WebFetch::Resources).to receive(:gather).with(json)
+      json = { a: 10, b: [1, 2, 3] }
+      expect(WebFetch::Resources).to receive(:gather).with(nil, json)
       router.route('/gather',
                    method: 'POST',
-                   query_string: "json=#{JSON.dump(json)}")
+                   query_string: "json=#{JSON.dump(json)}",
+                   server: nil)
     end
 
     it 'returns appropriate response when invaid json provided' do
       result = router.route('/gather',
                             method: 'POST',
-                            query_string: 'json=uh oh :(')
+                            query_string: 'json=uh oh :(',
+                            server: nil)
       expect(result).to eql(status: 400, payload: I18n.t(:bad_json))
     end
   end

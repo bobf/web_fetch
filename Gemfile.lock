@@ -5,6 +5,7 @@ PATH
       activesupport (~> 4.0)
       childprocess (~> 0.5)
       em-http-request (~> 1.1)
+      em-logger
       eventmachine (~> 1.0)
       eventmachine_httpserver (~> 0.2)
       faraday (~> 0.9)
@@ -38,8 +39,9 @@ GEM
       em-socksify (>= 0.3)
       eventmachine (>= 1.0.3)
       http_parser.rb (>= 0.6.0)
+    em-logger (0.1.0)
+      eventmachine (>= 0.12.10)
     em-socksify (0.3.2)
-      eventmachine (>= 1.0.0.beta.4)
     eventmachine (1.2.7)
     eventmachine_httpserver (0.2.1)
     faraday (0.15.3)
