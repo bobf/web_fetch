@@ -73,7 +73,11 @@ If you need to use the WebFetch server's HTTP API directly refer to the
 
 You may want to run the WebFetch server yourself rather than instantiate it
 via the client. For this case, the executable `bin/web_fetch_server` is
-provided.
+provided:
+
+```
+$ bundle exec bin/web_fetch_server
+```
 
 To connect to an existing process, use `WebFetch::Client.new` rather than
 `WebFetch::Client.create`. For example:
@@ -126,7 +130,7 @@ by passing `--log /path/to/logfile` to the command line server, or by passing
 `log: '/path/to/logfile'` to `WebFetch::Client.create`:
 
 ```
-$ bin/web_fetch_server --log /tmp/web_fetch.log
+$ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
 ```
 
 ```
