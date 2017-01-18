@@ -42,6 +42,7 @@ GEM
     em-logger (0.1.0)
       eventmachine (>= 0.12.10)
     em-socksify (0.3.2)
+      eventmachine (>= 1.0.0.beta.4)
     eventmachine (1.2.7)
     eventmachine_httpserver (0.2.1)
     faraday (0.15.3)

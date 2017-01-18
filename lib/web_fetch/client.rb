@@ -57,6 +57,7 @@ module WebFetch
         path = options.fetch(:path, standard_bin_file)
         args = ['--host', host, '--port', port.to_s]
         args += ['--log', options[:log]] unless options[:log].nil?
+        args.push('--daemonize') if options[:daemonize]
         process = ChildProcess.build(*path, *args)
         process.cwd = File.join(File.dirname(__dir__), '..')
         process.io.inherit!

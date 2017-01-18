@@ -100,6 +100,20 @@ $ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
 client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
 ```
 
+## Running as a daemon
+
+WebFetch can run fully daemonised. You should always specify a `log` parameter
+when running as a daemon. You can request daemonisation at the command line or
+via the client:
+
+```
+$ bundle exec bin/web_fetch_server --daemonize
+```
+
+```
+client = WebFetch::Client.create('localhost', 8077, daemonize: true)
+```
+
 ## Contributing
 
 WebFetch uses `rspec` for testing:

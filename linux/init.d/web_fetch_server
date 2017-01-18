@@ -1,0 +1,61 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides: WebFetchServer
+# Required-Start: $network $local_fs $syslog
+# Required-Stop: $network $local_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start the web_fetch server
+# Description: Enable APMLive background job web_fetch.
+### END INIT INFO
+
+set -u
+set -e
+NLS_LANG="ENGLISH_UNITED KINGDOM.UTF8"
+# Change these to match your app
+APP_ROOT="/apps/deployer/apmlive/current/"
+PID="/apps/deployer/apmlive/shared/pids/web_fetch.pid"
+ENV=dev
+RUNUSER=deployer
+[[ -z ${USER+x} ]] && USER='root'
+GEMFILE="${APP_ROOT}/Gemfile"
+
+WEB_FETCH_OPTS="--host localhost --port 8077 --pidfile $PID --daemonize"
+
+COMMD="/usr/bin/sh /users/deployer/.bashrc && cd $APP_ROOT && bundle exec web_fetch_server $WEB_FETCH_OPTS"
+
+cd $APP_ROOT || exit 1
+
+sig () {
+  test -s $PID && kill -$1 $(cat $PID)
+}
+
+
+case ${1-help} in
+  start)
+ sig 0 && echo >&2 "Already running" && exit 0
+ if [ $USER == $RUNUSER ]
+ then
+    eval $COMMD
+ else
+    su -c "$COMMD" -l $RUNUSER
+ fi
+ ;;
+  stop)
+ sig TERM && exit 0
+ echo >&2 "Not running"
+ ;;
+  restart|reload)
+ $0 stop
+ $0 start
+ ;;
+ status)
+  sig 0 && echo >&2 'Running' && exit 0
+  echo >&2 'Not running'
+ ;;
+ *)
+ echo >&2 "Usage: $0 <start|stop|restart|force-stop>"
+ exit 1
+ ;;
+esac
