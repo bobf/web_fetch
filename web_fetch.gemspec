@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = 'web_fetch'
-  s.version       = '0.1.0'
+  s.version       = '0.2.0'
   s.date          = '2016-10-16'
   s.summary       = 'Async HTTP fetcher'
   s.description   = 'Fetches HTTP responses as batch requests concurrently'

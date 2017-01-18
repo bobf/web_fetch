@@ -10,11 +10,19 @@ OptionParser.new do |opt|
   opt.on('--port 60089') { |o| options[:port] = o }
   opt.on('--pidfile tmp/web_fetch.pid') { |o| options[:pidfile] = o }
   opt.on('--log /path/to/logfile (default: stderr)') { |o| options[:log] = o }
+  opt.on('--daemonize') { |o| options[:daemonize] = o }
 end.parse!
 
 require 'web_fetch'
 
-WebFetch::Logger.log_path(options[:log])
+if options[:daemonize]
+  Process.daemon
+  WebFetch::Logger.log_path(options[:log])
+  WebFetch::Logger.info('Running as daemon')
+else
+  WebFetch::Logger.log_path(options[:log])
+end
+  
 WebFetch::Logger.info("Loading WebFetch server: #{options}")
 
 f = File.new(File.expand_path(options[:pidfile]), 'w+')

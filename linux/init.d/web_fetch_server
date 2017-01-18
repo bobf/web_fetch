@@ -21,9 +21,9 @@ RUNUSER=deployer
 [[ -z ${USER+x} ]] && USER='root'
 GEMFILE="${APP_ROOT}/Gemfile"
 
-WEB_FETCH_OPTS="--host localhost --port 8077 --pidfile $PID"
+WEB_FETCH_OPTS="--host localhost --port 8077 --pidfile $PID --daemonize"
 
-COMMD="/usr/bin/sh /users/deployer/.bashrc && cd $APP_ROOT && bundle exec web_fetch_server $WEB_FETCH_OPTS &"
+COMMD="/usr/bin/sh /users/deployer/.bashrc && cd $APP_ROOT && bundle exec web_fetch_server $WEB_FETCH_OPTS"
 
 cd $APP_ROOT || exit 1
 

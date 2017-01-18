@@ -114,7 +114,7 @@ client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 # [{:request=>{:url=>"http://foobar.baz", :my_unique_id=>"123-456-789"}, :hash=>"7c511911d16e1072363fa1653bdd93df65208901", :uid=>"1fb4ee7a-9fc0-4896-9af2-7cbdf234a468"}]
 ```
 
-## Running on a server.
+## Running on a server
 
 See [linux/init.d/web_fetch](linux/init.d/web_fetch)
 
@@ -136,4 +136,17 @@ $ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
 ```
 client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
 ```
->>>>>>> Implement logging and slight refactor
+
+## Running as a daemon
+
+WebFetch can run fully daemonised. You should always specify a `log` parameter
+when running as a daemon. You can request daemonisation at the command line or
+via the client:
+
+```
+$ bundle exec bin/web_fetch_server --daemonize
+```
+
+```
+client = WebFetch::Client.create('localhost', 8077, daemonize: true)
+```
