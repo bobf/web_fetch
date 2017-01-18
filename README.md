@@ -93,7 +93,7 @@ by passing `--log /path/to/logfile` to the command line server, or by passing
 `log: '/path/to/logfile'` to `WebFetch::Client.create`:
 
 ```
-$ bin/web_fetch_server --log /tmp/web_fetch.log
+$ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
 ```
 
 ```

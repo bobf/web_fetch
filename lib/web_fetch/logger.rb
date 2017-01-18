@@ -12,6 +12,8 @@ module WebFetch
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
     class << self
+      private
+
       def log_file(path)
         return STDERR if path.nil?
         log = File.open(path, 'a')

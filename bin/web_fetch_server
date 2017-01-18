@@ -15,14 +15,19 @@ end.parse!
 require 'web_fetch'
 
 WebFetch::Logger.log_path(options[:log])
+WebFetch::Logger.info("Loading WebFetch server: #{options}")
 
 f = File.new(File.expand_path(options[:pidfile]), 'w+')
 f.write(Process.pid)
 f.close
-WebFetch::Logger.info("pidfile at: #{File.expand_path(options[:pidfile])}")
+WebFetch::Logger.info("Pidfile created: #{File.expand_path(options[:pidfile])}")
 
-EM.run do
-  EM.start_server(options[:host],
-                  options[:port].to_i,
-                  WebFetch::Server)
+begin
+  EM.run do
+    EM.start_server(options[:host],
+                    options[:port].to_i,
+                    WebFetch::Server)
+  end
+rescue SignalException
+  WebFetch::Logger.info('Received SIGTERM, exiting.')
 end

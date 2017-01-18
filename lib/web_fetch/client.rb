@@ -55,10 +55,10 @@ module WebFetch
     class << self
       def spawn(host, port, options)
         path = options.fetch(:path, standard_bin_file)
-        args = [path, '--host', host, '--port', port.to_s]
+        args = ['--host', host, '--port', port.to_s]
         args += ['--log', options[:log]] unless options[:log].nil?
-        process = ChildProcess.build(*args)
-        process.environment['RUBYLIB'] = 'lib/'
+        process = ChildProcess.build(*path, *args)
+        process.cwd = File.join(File.dirname(__dir__), '..')
         process.io.inherit!
         process.start
         process
@@ -67,7 +67,7 @@ module WebFetch
       private
 
       def standard_bin_file
-        File.join(File.dirname(__dir__), '..', 'bin', 'web_fetch_server')
+        %w(bundle exec ./bin/web_fetch_server)
       end
     end
 
