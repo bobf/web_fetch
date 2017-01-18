@@ -1,10 +1,11 @@
 require 'forwardable'
 
 module WebFetch
+  # EventMachine-friendly Logger
   class Logger
     extend SingleForwardable
 
-    def self.set_log_path(path)
+    def self.log_path(path)
       @logger ||= EM::Logger.new(::Logger.new(log_file(path)))
     end
 

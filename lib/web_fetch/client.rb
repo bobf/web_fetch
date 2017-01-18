@@ -43,17 +43,14 @@ module WebFetch
     def retrieve_by_uid(uid)
       response = get('retrieve', uid: uid)
       return nil unless response.success?
-      resp = JSON.parse(response.body, symbolize_names: true)
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     class << self
       def spawn(host, port, options)
         path = options.fetch(:path, standard_bin_file)
         args = [path, '--host', host, '--port', port.to_s]
-        if options[:log]
-          args.push('--log')
-          args.push(options[:log])
-        end
+        args += ['--log', options[:log]] unless options[:log].nil?
         process = ChildProcess.build(*args)
         process.environment['RUBYLIB'] = 'lib/'
         process.io.inherit!

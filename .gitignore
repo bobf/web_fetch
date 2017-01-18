@@ -5,6 +5,7 @@
 
 # vim artefacts
 **.swp
+**.swo
 
 # Emacs stuff
 *~

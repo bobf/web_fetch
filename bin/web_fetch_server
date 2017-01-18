@@ -14,7 +14,7 @@ end.parse!
 
 require 'web_fetch'
 
-WebFetch::Logger.set_log_path(options[:log])
+WebFetch::Logger.log_path(options[:log])
 
 f = File.new(File.expand_path(options[:pidfile]), 'w+')
 f.write(Process.pid)

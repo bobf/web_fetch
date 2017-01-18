@@ -24,6 +24,8 @@ end
 
 require 'web_fetch/logger'
 require 'web_fetch/helpers'
+require 'web_fetch/event_machine_helpers'
+require 'web_fetch/http_helpers'
 require 'web_fetch/concerns/validatable'
 require 'web_fetch/storage'
 require 'web_fetch/server'
