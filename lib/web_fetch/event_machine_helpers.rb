@@ -2,8 +2,16 @@ module WebFetch
   # EventMachine layer-specific helpers
   module EventMachineHelpers
     def wait_for_response(deferred, response)
-      deferred[:http].callback { deferred[:succeeded] = true }
-      deferred[:http].errback { deferred[:failed] = true }
+      deferred[:http].callback do
+        Logger.debug("HTTP fetch complete for uid: #{deferred[:uid]}")
+        deferred[:succeeded] = true
+      end
+
+      deferred[:http].errback do
+        Logger.debug("HTTP fetch failed for uid: #{deferred[:uid]}")
+        deferred[:failed] = true
+      end
+
       tick_loop(deferred, response)
     end
 

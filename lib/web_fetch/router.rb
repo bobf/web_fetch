@@ -11,9 +11,10 @@ module WebFetch
     end
 
     def route(url, options = {})
-      @server = options[:server]
+      @server = options.delete(:server)
       options = { query_string: nil, method: 'GET' }.merge(options)
       method = options[:method].downcase.to_sym
+      Logger.info("#{url}: #{options}")
       begin
         params = build_params(options)
       rescue JSON::ParserError
