@@ -59,7 +59,25 @@ If you need to use the WebFetch server's HTTP API directly refer to the [Swagger
 
 ## Managing the WebFetch process yourself
 
-You may want to run the WebFetch server yourself rather than instantiate it via the client. For this case, the executable `bin/web_fetch_server` is provided.
+You may want to run the WebFetch server yourself rather than instantiate it via the client. For this case, the executable `bin/web_fetch_control` is provided.
+
+WebFetch can be started in the terminal with output going to STDOUT or as a daemon.
+
+Run the server as a daemon:
+
+```
+$ bundle exec bin/web_fetch_control start -- --log /tmp/web_fetch.log
+```
+
+**Note that you should always pass `--log` when running as a daemon otherwise all output will go to the null device.**
+
+Run the server in the terminal:
+
+```
+$ bundle exec bin/web_fetch_control run -- --port 8080
+```
+
+It is further recommended to use a process management tool to monitor the pidfile (pass `--pidfile /path/to/file.pid` to specify an explicit location).
 
 To connect to an existing process, use `WebFetch::Client.new` rather than `WebFetch::Client.create`. For example:
 
@@ -88,7 +106,7 @@ client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 
 ## Logging
 
-WebFetch logs to STDERR by default. An alternative log file can be set either
+WebFetch logs to STDOUT by default. An alternative log file can be set either
 by passing `--log /path/to/logfile` to the command line server, or by passing
 `log: '/path/to/logfile'` to `WebFetch::Client.create`:
 
@@ -98,20 +116,6 @@ $ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
 
 ```
 client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
-```
-
-## Running as a daemon
-
-WebFetch can run fully daemonised. You should always specify a `log` parameter
-when running as a daemon. You can request daemonisation at the command line or
-via the client:
-
-```
-$ bundle exec bin/web_fetch_server --daemonize
-```
-
-```
-client = WebFetch::Client.create('localhost', 8077, daemonize: true)
 ```
 
 ## Contributing

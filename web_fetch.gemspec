@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'hanami-utils', '0.8.0'
   s.add_dependency 'i18n', '~> 0.7'
   s.add_dependency 'rack', '~> 1.6'
+  s.add_dependency 'daemons', '~> 1.2'
 
   s.add_development_dependency 'byebug', '~> 9.0'
   s.add_development_dependency 'rspec', '~> 3.5'

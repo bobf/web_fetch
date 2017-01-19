@@ -54,11 +54,7 @@ module WebFetch
 
     class << self
       def spawn(host, port, options)
-        path = options.fetch(:path, standard_bin_file)
-        args = ['--host', host, '--port', port.to_s]
-        args += ['--log', options[:log]] unless options[:log].nil?
-        args.push('--daemonize') if options[:daemonize]
-        process = ChildProcess.build(*path, *args)
+        process = build_process(host, port, options)
         process.cwd = File.join(File.dirname(__dir__), '..')
         process.io.inherit!
         process.start
@@ -67,8 +63,16 @@ module WebFetch
 
       private
 
-      def standard_bin_file
-        %w(bundle exec ./bin/web_fetch_server)
+      def build_process(host, port, options)
+        command = options.fetch(:start_command, standard_start_command)
+        args = ['--host', host, '--port', port.to_s]
+        args += ['--log', options[:log]] unless options[:log].nil?
+        args.push('--daemonize') if options[:daemonize]
+        ChildProcess.build(*command, *args)
+      end
+
+      def standard_start_command
+        %w(bundle exec ./bin/web_fetch_control run --)
       end
     end
 

@@ -16,7 +16,8 @@ module WebFetch
         if gatherer.valid?
           { status: status(:ok), payload: gatherer.start }
         else
-          { status: status(:unprocessable), payload: { error: gatherer.errors } }
+          { status: status(:unprocessable),
+            payload: { error: gatherer.errors } }
         end
       end
 
