@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Run me with:
-# RUBYLIB=lib/ bundle exec ruby doc/client_example.rb
+# bundle exec ruby doc/client_example.rb
 require 'web_fetch'
 begin
   cli = WebFetch::Client.create('localhost', 8077)
