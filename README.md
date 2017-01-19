@@ -72,12 +72,31 @@ If you need to use the WebFetch server's HTTP API directly refer to the
 ## Managing the WebFetch process yourself
 
 You may want to run the WebFetch server yourself rather than instantiate it
-via the client. For this case, the executable `bin/web_fetch_server` is
-provided:
+via the client. For this case, the executable `bin/web_fetch_control` is
+provided.
+
+WebFetch can be started in the terminal with output going to STDOUT or as a
+daemon.
+
+Run the server as a daemon:
 
 ```
-$ bundle exec bin/web_fetch_server
+$ bundle exec bin/web_fetch_control start -- --log /tmp/web_fetch.log
 ```
+
+**Note that you should always pass `--log` when running as a daemon otherwise
+all output will go to the null device.**
+
+Run the server in the terminal:
+
+```
+$ bundle exec bin/web_fetch_control run -- --port 8080
+```
+
+See [linux/init.d/web_fetch](linux/init.d/web_fetch) for an example.
+
+It is further recommended to use a process management tool to monitor the
+pidfile (pass `--pidfile /path/to/file.pid` to specify an explicit location).
 
 To connect to an existing process, use `WebFetch::Client.new` rather than
 `WebFetch::Client.create`. For example:
@@ -114,18 +133,9 @@ client.gather([{ url: 'http://foobar.baz', my_unique_id: '123-456-789' }])
 # [{:request=>{:url=>"http://foobar.baz", :my_unique_id=>"123-456-789"}, :hash=>"7c511911d16e1072363fa1653bdd93df65208901", :uid=>"1fb4ee7a-9fc0-4896-9af2-7cbdf234a468"}]
 ```
 
-## Running on a server
-
-See [linux/init.d/web_fetch](linux/init.d/web_fetch)
-
-It should be placed within the bootup scripts on the server.
-
-Additionally make sure the pid for this is monitored and there is a process to
-restart the server as WebFetch runs in a single process.
-
 ## Logging
 
-WebFetch logs to STDERR by default. An alternative log file can be set either
+WebFetch logs to STDOUT by default. An alternative log file can be set either
 by passing `--log /path/to/logfile` to the command line server, or by passing
 `log: '/path/to/logfile'` to `WebFetch::Client.create`:
 

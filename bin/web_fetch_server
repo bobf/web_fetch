@@ -1,41 +1,30 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'tmpdir'
 
-pidfile = File.join(Dir.tmpdir, 'web_fetch.pid')
-options = { host: 'localhost', port: '60089', pidfile: pidfile }
+options = { host: 'localhost', port: '60089' }
 OptionParser.new do |opt|
   opt.on('--host localhost') { |o| options[:host] = o }
   opt.on('--port 60089') { |o| options[:port] = o }
   opt.on('--pidfile tmp/web_fetch.pid') { |o| options[:pidfile] = o }
-  opt.on('--log /path/to/logfile (default: stderr)') { |o| options[:log] = o }
-  opt.on('--daemonize') { |o| options[:daemonize] = o }
+  opt.on('--log web_fetch.log') { |o| options[:log] = o }
 end.parse!
 
 require 'web_fetch'
-
-if options[:daemonize]
-  Process.daemon
-  WebFetch::Logger.log_path(options[:log])
-  WebFetch::Logger.info('Running as daemon')
-else
-  WebFetch::Logger.log_path(options[:log])
-end
-  
+WebFetch::Logger.log_path(options[:log])
 WebFetch::Logger.info("Loading WebFetch server: #{options}")
 
-f = File.new(File.expand_path(options[:pidfile]), 'w+')
-f.write(Process.pid)
-f.close
-WebFetch::Logger.info("Pidfile created: #{File.expand_path(options[:pidfile])}")
-
-begin
-  EM.run do
-    EM.start_server(options[:host],
-                    options[:port].to_i,
-                    WebFetch::Server)
+pid_path = options[:pidfile].nil? ? nil : File.expand_path(options[:pidfile])
+if pid_path
+  pid = Process.pid
+  File.open(pid_path, 'w+') do |f|
+    f.write(pid)
   end
-rescue SignalException
-  WebFetch::Logger.info('Received SIGTERM, exiting.')
+  WebFetch::Logger.info("Pidfile created: #{pid_path} (#{pid})")
+end
+
+EM.run do
+  EM.start_server(options[:host],
+                  options[:port].to_i,
+                  WebFetch::Server)
 end

@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'daemons'
+
+Daemons.run('bin/web_fetch_server', multiple: true)

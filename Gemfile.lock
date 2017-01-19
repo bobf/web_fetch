@@ -4,6 +4,7 @@ PATH
     web_fetch (0.2.0)
       activesupport (~> 4.0)
       childprocess (~> 0.5)
+      daemons (~> 1.2)
       em-http-request (~> 1.1)
       em-logger
       eventmachine (~> 1.0)
@@ -30,6 +31,7 @@ GEM
     cookiejar (0.3.3)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    daemons (1.2.4)
     diff-lcs (1.2.5)
     em-http-request (1.1.5)
       addressable (>= 2.3.4)
