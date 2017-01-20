@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split($RS)
   s.require_paths = ['lib']
   s.executables << 'web_fetch_server'
+  s.executables << 'web_fetch_control'
 
   s.add_dependency 'eventmachine', '~> 1.0'
   s.add_dependency 'eventmachine_httpserver', '~> 0.2'
