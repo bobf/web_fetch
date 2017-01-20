@@ -2,4 +2,5 @@
 
 require 'daemons'
 
-Daemons.run('bin/web_fetch_server', multiple: true)
+server = File.expand_path(File.join(File.dirname(__FILE__), 'web_fetch_server'))
+Daemons.run(server, multiple: true)
