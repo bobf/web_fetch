@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Retrieves a gathered HTTP request
   class Retriever
@@ -14,6 +16,7 @@ module WebFetch
     def find
       stored = @server.storage.fetch(@uid)
       return not_found if stored.nil?
+
       stored
     end
 

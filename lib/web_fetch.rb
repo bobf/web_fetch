@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'eventmachine'
 require 'evma_httpserver'
 require 'em-http'
@@ -9,12 +11,12 @@ require 'faraday'
 require 'childprocess'
 require 'active_support/gzip'
 
-locales_path = File.expand_path('../../config/locales/*.yml', __FILE__)
+locales_path = File.expand_path('../config/locales/*.yml', __dir__)
 
-# Locales heavily
-if Gem.loaded_specs.key?('rails')
-  I18n.load_path += Dir[locales_path]
-else
+I18n.load_path += Dir[locales_path]
+
+# Avoid i18n conflicts when using as a gem in a Rails application
+unless Gem.loaded_specs.key?('rails')
   I18n.load_path += Dir[locales_path]
   I18n.backend.load_translations
   I18n.config.available_locales = :en
@@ -22,6 +24,7 @@ end
 
 require 'web_fetch/helpers'
 require 'web_fetch/concerns/validatable'
+require 'web_fetch/concerns/http_helpers'
 require 'web_fetch/storage'
 require 'web_fetch/server'
 require 'web_fetch/router'

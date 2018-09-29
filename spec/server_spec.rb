@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Server do
   let(:port) { 8089 }
   let(:host) { 'localhost' }

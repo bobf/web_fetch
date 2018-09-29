@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Gatherer do
   let(:server) { WebFetch::MockServer.new }
 

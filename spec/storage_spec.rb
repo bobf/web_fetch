@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Storage do
   describe '.store' do
     it 'accepts a key and value to store' do

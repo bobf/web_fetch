@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'hanami/router'
 require 'rack/utils'
 
@@ -43,7 +45,7 @@ module WebFetch
         }
       end
     end
-    # rubocop:enable
+    # rubocop:enable Metrics/MethodLength
 
     def build_params(options)
       params = Rack::Utils.parse_nested_query(options[:query_string])

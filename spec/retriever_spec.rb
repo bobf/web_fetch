@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Retriever do
   let(:server) { WebFetch::MockServer.new }
   let(:valid_params) { { uid: 'abc123' } }

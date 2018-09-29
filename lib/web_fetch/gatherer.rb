@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Handles requests to gather URLs and delegates to the EventMachine web
   # server
   class Gatherer
     include Validatable
 
-    HASHABLE_KEYS = [:url, :query_string, :headers, :method].freeze
+    HASHABLE_KEYS = %i[url query_string headers method].freeze
 
     def initialize(params)
       @requests = params[:requests]

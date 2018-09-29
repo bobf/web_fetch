@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Provides boilerplate for a validatable model
   module Validatable

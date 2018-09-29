@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Validatable do
   class ConcernedInvalid
     include ::WebFetch::Validatable
@@ -10,8 +12,7 @@ describe WebFetch::Validatable do
 
   class ConcernedValid
     include ::WebFetch::Validatable
-    def validate
-    end
+    def validate; end
   end
 
   class ConcernedNotOverridden

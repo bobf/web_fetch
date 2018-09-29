@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Helpers do
   class HelperIncluder
     include WebFetch::Helpers

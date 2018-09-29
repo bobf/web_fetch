@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'web_fetch'
 require 'pp'
 require 'byebug'
@@ -26,8 +28,7 @@ puts 'Test server started'
 
 module WebFetch
   class MockServer
-    def gather(requests)
-    end
+    def gather(requests); end
 
     def storage
       Storage

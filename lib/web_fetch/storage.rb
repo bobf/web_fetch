@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Rudimentary global storage for responses
   class Storage

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'Internationalisation' do
   it 'accesses translation files and generates translations' do
     # Just a quick sanity check to make sure the translation file is loaded

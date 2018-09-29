@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WebFetch::Router do
   let(:router) { described_class.new }
 

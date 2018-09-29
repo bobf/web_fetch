@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Shared code used throughout the application
   module Helpers

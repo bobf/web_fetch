@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Client to be used in application code. Capable of spawning a server and
   # interacting with it to gather requests and retrieve them
@@ -19,6 +21,7 @@ module WebFetch
     def stop
       # Will block until process dies
       return if @process.nil?
+
       @process.stop
       @process.wait
     end
@@ -30,6 +33,7 @@ module WebFetch
         return false
       end
       return false unless response.success?
+
       JSON.parse(response.body)['application'] == 'WebFetch'
     end
 
@@ -37,13 +41,15 @@ module WebFetch
       json = JSON.dump(requests: requests)
       response = post('gather', json)
       return nil unless response.success?
+
       JSON.parse(response.body, symbolize_names: true)[:requests]
     end
 
     def retrieve_by_uid(uid)
       response = get('retrieve', uid: uid)
       return nil unless response.success?
-      resp = JSON.parse(response.body, symbolize_names: true)
+
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     class << self
