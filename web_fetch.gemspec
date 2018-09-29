@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.authors       = ['Bob Farrell']
   s.email         = 'robertanthonyfarrell@gmail.com'
   s.files         = `git ls-files`.split($RS)
+  s.homepage      = 'https://github.com/bobf/web_fetch'
   s.licenses      = ['MIT']
   s.require_paths = ['lib']
   s.executables << 'web_fetch_server'
