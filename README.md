@@ -123,10 +123,22 @@ client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
 WebFetch uses `rspec` for testing:
 
 ```
-bundle exec rspec
+bin/rspec
 ```
 
+Rubocop is used for code style governance:
+
+```
+bin/rubocop
+```
+
+Make sure that any new code you write has an appropriate test and that all Rubocop checks pass.
+
 Feel free to fork and create a pull request if you would like to make any changes.
+
+## License
+
+WebFetch is licensed under the [MIT License][7]. You are encouraged to re-use the code in any way you see fit as long as you give credit to the original author. If you do use the code for any other projects then feel free to let me know but, of course, this is not required.
 
 [1]: https://github.com/eventmachine/eventmachine
 [2]: doc/web_fetch_architecture.png
@@ -134,3 +146,4 @@ Feel free to fork and create a pull request if you would like to make any change
 [4]: lib/web_fetch/client.rb
 [5]: doc/client_example.rb
 [6]: swagger.yaml
+[7]: LICENSE
