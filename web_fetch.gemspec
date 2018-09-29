@@ -1,6 +1,10 @@
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'web_fetch/version'
+
 Gem::Specification.new do |s|
   s.name          = 'web_fetch'
-  s.version       = '0.1.0'
+  s.version       = WebFetch::VERSION
   s.date          = '2016-10-16'
   s.summary       = 'Async HTTP fetcher'
   s.description   = 'Fetches HTTP responses as batch requests concurrently'
