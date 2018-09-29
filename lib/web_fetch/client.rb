@@ -72,7 +72,7 @@ module WebFetch
       end
 
       def standard_start_command
-        %w(bundle exec ./bin/web_fetch_control run --)
+        %w[bundle exec ./bin/web_fetch_control run --]
       end
     end
 

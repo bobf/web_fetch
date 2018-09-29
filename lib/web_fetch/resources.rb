@@ -21,8 +21,10 @@ module WebFetch
 
       def retrieve(server, params)
         retriever = Retriever.new(server, params)
-        return { status: status(:unprocessable),
-                 payload: { error: retriever.errors } } unless retriever.valid?
+        unless retriever.valid?
+          return { status: status(:unprocessable),
+                   payload: { error: retriever.errors } }
+        end
         defer_if_found(retriever)
       end
 

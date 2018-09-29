@@ -11,7 +11,7 @@ OptionParser.new do |opt|
 end.parse!
 
 require 'web_fetch'
-WebFetch::Logger.log_path(options[:log])
+WebFetch::Logger.logger(options[:log])
 WebFetch::Logger.info("Loading WebFetch server: #{options}")
 
 pid_path = options[:pidfile].nil? ? nil : File.expand_path(options[:pidfile])

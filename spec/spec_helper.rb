@@ -9,7 +9,7 @@ WebMock.disable_net_connect!(allow_localhost: true)
 
 # This is pretty ugly but seems to do the job
 puts 'Starting test server'
-WebFetch::Logger.log_path(File::NULL)
+WebFetch::Logger.logger(File::NULL)
 
 Thread.new do
   EM.run do

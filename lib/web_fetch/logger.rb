@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module WebFetch
@@ -5,7 +7,7 @@ module WebFetch
   class Logger
     extend SingleForwardable
 
-    def self.log_path(path)
+    def self.logger(path)
       @logger ||= EM::Logger.new(::Logger.new(log_file(path)))
     end
 
@@ -17,6 +19,7 @@ module WebFetch
       def log_file(path)
         return STDOUT if STDOUT.isatty && path.nil?
         return File.open(File::NULL, 'w') if path.nil?
+
         log = File.open(path, 'a')
         log.sync = true # Prevent buffering
         log

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # EventMachine layer-specific helpers
   module EventMachineHelpers

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   # Convenience methods for WebFetch HTTP layer
   module HTTPHelpers
@@ -27,6 +29,7 @@ module WebFetch
 
     def post_data
       return nil unless @http_post_content
+
       JSON.parse(@http_post_content, symbolize_names: true)
     end
 
@@ -60,7 +63,7 @@ module WebFetch
         body: result.response,
         headers: result.headers,
         status: result.response_header.status,
-        error: (result.error.inspect unless result.error.nil?)
+        error: (result.error&.inspect)
       },
         uid: deferred[:uid] }
     end
