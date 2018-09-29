@@ -13,3 +13,6 @@
 *#
 #*
 .#*
+
+bin/*.pid
+web_fetch-*.gem

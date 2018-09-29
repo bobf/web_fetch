@@ -10,13 +10,15 @@ module WebFetch
     end
 
     def compress(string)
+      return string unless accept_gzip?
+
       ActiveSupport::Gzip.compress(string)
     end
 
     def default_headers(response)
       response.headers['Content-Type'] = 'application/json; charset=utf-8'
       response.headers['Cache-Control'] = 'max-age=0, private, must-revalidate'
-      response.headers['Content-Encoding'] = 'gzip'
+      response.headers['Content-Encoding'] = 'gzip' if accept_gzip?
       response.headers['Vary'] = 'Accept-Encoding'
     end
 
@@ -66,6 +68,11 @@ module WebFetch
         error: (result.error&.inspect)
       },
         uid: deferred[:uid] }
+    end
+
+    def accept_gzip?
+      # em-http-request doesn't do us any favours with parsing the HTTP headers
+      @http_headers.downcase.include?('accept-encoding: gzip')
     end
   end
 end
