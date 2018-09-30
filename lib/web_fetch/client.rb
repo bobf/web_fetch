@@ -40,7 +40,7 @@ module WebFetch
     end
 
     def gather(requests)
-      json = JSON.dump(requests: requests)
+      json = JSON.dump(requests: requests.map(&:to_h))
       response = post('gather', json)
       return nil unless response.success?
 

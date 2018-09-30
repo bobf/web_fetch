@@ -4,30 +4,29 @@
 # bundle exec ruby doc/client_example.rb
 require 'web_fetch'
 
-$requests = [
-  { url: 'http://localhost:8077/' },
-  { url: 'http://yahoo.com/' },
-  { url: 'http://lycos.com/' },
-  { url: 'http://google.com/' }
-]
+urls = ['http://localhost:8077/',
+        'http://yahoo.com/',
+        'http://lycos.com/',
+        'http://google.com/']
 
-# Wait for each response to return while iterating:
+$requests = urls.map do |url|
+  WebFetch::Request.new do |request|
+    request.url = url
+  end
+end
+
 begin
-  client = WebFetch::Client.new('localhost', 8077)
+  # Wait for each response to return while iterating:
+  client = WebFetch::Client.create('localhost', 8077)
   responses = client.gather($requests)
 
   responses.each do |response|
     puts response.fetch(wait: true) # Will block (default behaviour)
   end
-ensure
-  client.stop
-end
 
-
-# Use a non-blocking call to `#fetch` and iterate over all responses until they
-# are completed:
-begin
-  client = WebFetch::Client.new('localhost', 8077)
+  # Use a non-blocking call to `#fetch` and iterate over all responses until
+  # they are completed:
+  client = WebFetch::Client.create('localhost', 8077)
   responses = client.gather($requests)
 
   while responses.any? { |response| !response.complete? }

@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'byebug', '~> 9.0'
   s.add_development_dependency 'rspec', '~> 3.5'
+  s.add_development_dependency 'rspec-its', '~> 1.2'
   s.add_development_dependency 'rubocop', '~> 0.59.2'
   s.add_development_dependency 'webmock', '~> 3.4'
 end

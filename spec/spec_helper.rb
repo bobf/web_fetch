@@ -4,6 +4,7 @@ require 'web_fetch'
 require 'pp'
 require 'byebug'
 require 'webmock/rspec'
+require 'rspec/its'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
