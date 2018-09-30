@@ -36,4 +36,26 @@ RSpec.describe WebFetch::Request do
     subject { request.method }
     it { is_expected.to eql :get }
   end
+
+  describe '#from_hash' do
+    subject do
+      described_class.from_hash(
+        url: 'a', method: 'GET', query: {},
+        headers: {}, body: 'abc', custom: {}
+      )
+    end
+
+    it { is_expected.to be_a WebFetch::Request }
+    its(:url) { is_expected.to eql 'a' }
+    its(:method) { is_expected.to eql :get }
+    its(:query) { is_expected.to eql({}) }
+    its(:headers) { are_expected.to eql({}) }
+    its(:body) { is_expected.to eql 'abc' }
+    its(:custom) { is_expected.to eql({}) }
+
+    context 'unrecognised keys' do
+      subject { proc { described_class.from_hash(unkown_key: 'foo') } }
+      it { is_expected.to raise_error(ArgumentError) }
+    end
+  end
 end

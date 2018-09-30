@@ -26,9 +26,14 @@ describe WebFetch::Client do
 
   describe '#gather' do
     it 'makes `gather` requests to a running server' do
-      result = client.gather([{ url: 'http://blah.blah/success' }])
+      request = WebFetch::Request.new do |request|
+        request.url = 'http://blah.blah/success'
+        request.custom = { my_key: 'my_value' }
+      end
+      result = client.gather([request])
       expect(result.first).to be_a WebFetch::Response
       expect(result.first.uid).to_not be_nil
+      expect(result.first.custom).to eql(my_key: 'my_value')
     end
   end
 

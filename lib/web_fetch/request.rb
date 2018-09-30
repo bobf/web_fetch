@@ -25,5 +25,19 @@ module WebFetch
         custom: custom
       }
     end
+
+    def self.from_hash(hash)
+      hash = hash.dup
+      new_request = Request.new do |request|
+        request.url = hash.delete(:url) if hash.key?(:url)
+        request.query = hash.delete(:query) if hash.key?(:query)
+        request.headers = hash.delete(:headers) if hash.key?(:headers)
+        request.body = hash.delete(:body) if hash.key?(:body)
+        request.method = hash.delete(:method) if hash.key?(:method)
+        request.custom = hash.delete(:custom) if hash.key?(:custom)
+      end
+      raise ArgumentError, "Unrecognized keys: #{hash}" unless hash.empty?
+      new_request
+    end
   end
 end

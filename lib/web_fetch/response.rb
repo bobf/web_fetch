@@ -5,13 +5,17 @@ module WebFetch
     def initialize(client, options = {})
       @client = client
       @uid = options[:uid]
-      @request = options[:request]
+      @request = WebFetch::Request.from_hash(options[:request])
     end
 
     def fetch(options = {})
       return @result if complete?
       block = options.fetch(:wait, true)
       (@result = find_or_retrieve(block))
+    end
+
+    def custom
+      request&.custom
     end
 
     def complete?

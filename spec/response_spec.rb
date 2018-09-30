@@ -1,6 +1,6 @@
 RSpec.describe WebFetch::Response do
   let(:uid) { 'abc123' }
-  let(:request) { { url: 'http://blah' } }
+  let(:request) { { url: 'http://blah', custom: { my_key: 'my_value' } } }
   let(:options) { { uid: uid, request: request } }
   let(:client) { WebFetch::Client.new('test-host', 8080) }
   let(:response) { described_class.new(client, options) }
@@ -59,5 +59,17 @@ RSpec.describe WebFetch::Response do
     context 'request not started' do
       it { is_expected.to be false }
     end
+  end
+
+  describe '#request' do
+    subject { response.request }
+    it { is_expected.to be_a WebFetch::Request }
+    its(:custom) { is_expected.to eql(my_key: 'my_value') }
+  end
+
+  describe '#custom' do
+    # I think it's good to expose this directly on the response even though its
+    # accessible on as `response.request.custom`
+    its(:custom) { is_expected.to eql(my_key: 'my_value') }
   end
 end

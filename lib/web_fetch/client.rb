@@ -46,7 +46,7 @@ module WebFetch
 
       requests = JSON.parse(response.body, symbolize_names: true)[:requests]
       requests.map do |request|
-        Response.new(self, uid: request[:uid], request: request)
+        Response.new(self, uid: request[:uid], request: request[:request])
       end
     end
 
