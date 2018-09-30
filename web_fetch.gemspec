@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables << 'web_fetch_server'
   s.executables << 'web_fetch_control'
 
-  s.add_dependency 'activesupport', '~> 4.0'
+  s.add_dependency 'activesupport', '>= 4.0'
   s.add_dependency 'childprocess', '~> 0.5'
   s.add_dependency 'daemons', '~> 1.2'
   s.add_dependency 'em-http-request', '~> 1.1'
