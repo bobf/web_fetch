@@ -12,6 +12,11 @@ describe WebFetch::Client do
     client
   end
 
+  describe '#request' do
+    subject { client.request(url: 'http://blah.blah/success') }
+    it { is_expected.to be_a WebFetch::Client::Request }
+  end
+
   describe '#alive?' do
     it 'confirms server is alive and accepting requests' do
       expect(client.alive?).to be true
