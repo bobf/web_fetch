@@ -1,7 +1,7 @@
 module WebFetch
   class Request
-    attr_writer :url, :query, :headers, :body
-    attr_reader :url, :query, :headers, :body
+    attr_writer :url, :query, :headers, :body, :custom
+    attr_reader :url, :query, :headers, :body, :custom
 
     def initialize
       yield self
@@ -21,7 +21,8 @@ module WebFetch
         query: query,
         headers: headers,
         body: body,
-        method: method
+        method: method,
+        custom: custom
       }
     end
   end

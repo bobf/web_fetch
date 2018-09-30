@@ -6,6 +6,7 @@ RSpec.describe WebFetch::Request do
       request.query = { foo: 'bar' }
       request.headers = { 'Content-Type' => 'application/baz' }
       request.body = 'abc123'
+      request.custom = { my_custom_key: 'my_custom_value' }
     end
   end
 
@@ -15,7 +16,8 @@ RSpec.describe WebFetch::Request do
       method: :get,
       query: { foo: 'bar' },
       headers: { 'Content-Type' => 'application/baz' },
-      body: 'abc123'
+      body: 'abc123',
+      custom: { my_custom_key: 'my_custom_value' }
     }
   end
 
@@ -26,6 +28,7 @@ RSpec.describe WebFetch::Request do
   its(:query) { is_expected.to eql(foo: 'bar') }
   its(:headers) { are_expected.to eql('Content-Type' => 'application/baz') }
   its(:body) { is_expected.to eql 'abc123' }
+  its(:custom) { is_expected.to eql(my_custom_key: 'my_custom_value') }
   its(:to_h) { is_expected.to eql hash }
 
   describe '#get' do
