@@ -26,6 +26,16 @@ module WebFetch
       }
     end
 
+    def eql?(val)
+      # Makes testing WebFetch a bit easier (based on real world case I hit
+      # using WebFetch in a Rails app)
+      val.to_h == to_h
+    end
+
+    def ==(val)
+      eql?(val)
+    end
+
     def self.from_hash(hash)
       hash = hash.dup
       new_request = Request.new do |request|

@@ -45,7 +45,7 @@ RSpec.describe WebFetch::Request do
       )
     end
 
-    it { is_expected.to be_a WebFetch::Request }
+    it { is_expected.to be_a described_class }
     its(:url) { is_expected.to eql 'a' }
     its(:method) { is_expected.to eql :get }
     its(:query) { is_expected.to eql({}) }
@@ -57,5 +57,15 @@ RSpec.describe WebFetch::Request do
       subject { proc { described_class.from_hash(unkown_key: 'foo') } }
       it { is_expected.to raise_error(ArgumentError) }
     end
+  end
+
+  describe '#==' do
+    let(:request_copy) { described_class.from_hash(request.to_h) }
+    it { is_expected.to eq(request_copy) }
+  end
+
+  describe '#eql' do
+    let(:request_copy) { described_class.from_hash(request.to_h) }
+    it { is_expected.to eql(request_copy) }
   end
 end
