@@ -49,6 +49,7 @@ module WebFetch
       response.status = 200
       response.content = compress(JSON.dump(success(request)))
       response.send_response
+      storage.delete(request[:uid])
     end
 
     def success(request)
@@ -66,6 +67,7 @@ module WebFetch
       response.status = 200
       response.content = compress(JSON.dump(failure(request)))
       response.send_response
+      storage.delete(request[:uid])
     end
 
     def failure(request)

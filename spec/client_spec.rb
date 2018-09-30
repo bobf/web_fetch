@@ -27,14 +27,15 @@ describe WebFetch::Client do
   describe '#gather' do
     it 'makes `gather` requests to a running server' do
       result = client.gather([{ url: 'http://blah.blah/success' }])
-      expect(result.first[:uid]).to_not be_nil
+      expect(result.first).to be_a WebFetch::Response
+      expect(result.first.uid).to_not be_nil
     end
   end
 
   describe '#retrieve_by_uid' do
     it 'retrieves a gathered item' do
       result = client.gather([{ url: 'http://blah.blah/success' }])
-      uid = result.first[:uid]
+      uid = result.first.uid
 
       retrieved = client.retrieve_by_uid(uid)
       expect(retrieved[:response][:status]).to eql 200

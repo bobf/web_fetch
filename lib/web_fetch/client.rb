@@ -44,7 +44,10 @@ module WebFetch
       response = post('gather', json)
       return nil unless response.success?
 
-      JSON.parse(response.body, symbolize_names: true)[:requests]
+      requests = JSON.parse(response.body, symbolize_names: true)[:requests]
+      requests.map do |request|
+        Response.new(self, uid: request[:uid], request: request)
+      end
     end
 
     def retrieve_by_uid(uid)
