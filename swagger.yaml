@@ -22,7 +22,7 @@ paths:
               application:
                 type: string
                 description: WebFetch
-                
+
   /gather:
     post:
       summary: Initiate fetching one or more HTTP entities.
@@ -42,11 +42,11 @@ paths:
           description: An array of objects providing job IDs and original parameters.
           schema:
             $ref: '#/definitions/GatherResponse'
-              
+
 
   /retrieve/{id}:
     get:
-      summary: Retrieve a gathered HTTP entity.
+      summary: Retrieve a gathered HTTP entity (blocking).
       description: |
         Receives a unique identifier and returns the previously requested HTTP entity. This action will block until the entity has been successfully downloaded.
       parameters:
@@ -62,7 +62,26 @@ paths:
             type: object
             items:
               $ref: '#/definitions/Retrieved'
-    
+
+  /find/{id}:
+    get:
+      summary: Retrieve a gathered HTTP entity (non-blocking).
+      description: |
+        Receives a unique identifier and returns the previously requested HTTP entity. This action will return immediately and provide a pending status if the entity has not finished downloading.
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: Unique identifier for HTTP entity.
+          required: true
+      responses:
+        200:
+          description: An object containing HTTP entity elements.
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Found'
+
 definitions:
   Request:
     type: object
@@ -98,7 +117,24 @@ definitions:
             type: object
           status:
             type: integer
-            
+  Found:
+    type: object
+    properties:
+      response:
+        type: object
+        description: Requested HTTP entity elements.
+        properties:
+          success:
+            type: boolean
+          body:
+            type: string
+          headers:
+            type: object
+          status:
+            type: integer
+          pending:
+            type: boolean
+
   GatherResponse:
     type: array
     items:

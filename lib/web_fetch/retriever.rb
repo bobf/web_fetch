@@ -7,17 +7,20 @@ module WebFetch
 
     attr_reader :not_found_error
 
-    def initialize(server, params)
+    def initialize(server, params, options)
       @uid = params[:uid]
       @hash = params[:hash]
       @server = server
+      @block = options.fetch(:block, true)
     end
 
     def find
-      stored = @server.storage.fetch(@uid)
-      return not_found if stored.nil?
+      request = @server.storage.fetch(@uid)
+      return not_found if request.nil?
+      return not_found if request.nil?
+      return request.merge(pending: true) if pending?(request)
 
-      stored
+      request
     end
 
     private
@@ -34,6 +37,16 @@ module WebFetch
                            I18n.t(:hash_not_found)
                          end
       nil
+    end
+
+    def pending?(request)
+      return false if request.nil?
+      return false if request[:succeeded]
+      # User requested blocking operation so we will wait until item is ready
+      # rather than return a `pending` status
+      return false if @block
+
+      true
     end
   end
 end

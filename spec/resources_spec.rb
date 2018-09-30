@@ -24,7 +24,7 @@ describe WebFetch::Resources do
     end
   end
 
-  describe 'retrieve' do
+  describe '.retrieve' do
     it 'gives 404 not found when unrecognised uid requested' do
       result = described_class.retrieve(server, uid: '123')
       expect(result[:status]).to eql 404
@@ -34,6 +34,22 @@ describe WebFetch::Resources do
 
     it 'gives 404 not found when unrecognised hash requested' do
       result = described_class.retrieve(server, hash: 'abc')
+      expect(result[:status]).to eql 404
+      error = result[:payload][:error]
+      expect(error).to eql I18n.t(:hash_not_found)
+    end
+  end
+
+  describe '.find' do
+    it 'gives 404 not found when unrecognised uid requested' do
+      result = described_class.find(server, uid: '123')
+      expect(result[:status]).to eql 404
+      error = result[:payload][:error]
+      expect(error).to eql I18n.t(:uid_not_found)
+    end
+
+    it 'gives 404 not found when unrecognised hash requested' do
+      result = described_class.find(server, hash: 'abc')
       expect(result[:status]).to eql 404
       error = result[:payload][:error]
       expect(error).to eql I18n.t(:hash_not_found)

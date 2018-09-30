@@ -4,6 +4,8 @@ module WebFetch
   # Client to be used in application code. Capable of spawning a server and
   # interacting with it to gather requests and retrieve them
   class Client
+    attr_reader :host, :port
+
     def initialize(host, port, options = {})
       @host = host
       @port = port
@@ -46,7 +48,14 @@ module WebFetch
     end
 
     def retrieve_by_uid(uid)
-      response = get('retrieve', uid: uid)
+      response = get("retrieve/#{uid}")
+      return nil unless response.success?
+
+      JSON.parse(response.body, symbolize_names: true)
+    end
+
+    def find_by_uid(uid)
+      response = get("find/#{uid}")
       return nil unless response.success?
 
       JSON.parse(response.body, symbolize_names: true)

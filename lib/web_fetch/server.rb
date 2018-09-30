@@ -23,11 +23,18 @@ module WebFetch
 
       default_headers(response)
 
-      if result[:deferred].nil?
-        respond_immediately(result, response)
-      else
-        wait_for_response(result[:deferred], response)
-      end
+      # User requested an unrecognised ID
+      return respond_immediately(result, response) if result[:request].nil?
+
+      # Fetch has already completed
+      return succeed(result, response) if result[:succeeded]
+      return fail_(result, response) if result[:failed]
+
+      # User requested non-blocking call
+      return pending(result, response) if result[:request][:pending]
+
+      # User requested blocking call
+      wait_for_response(result[:request], response)
     end
 
     # Note that #gather is called by WebFetch itself to asynchronously gather
@@ -42,7 +49,9 @@ module WebFetch
                                          head: request[:headers],
                                          query: request.fetch(:query, {}),
                                          body: request.fetch(:body, nil))
-        @storage.store(target[:uid], uid: target[:uid], http: http)
+        request = { uid: target[:uid], deferred: http }
+        apply_callbacks(request)
+        @storage.store(target[:uid], request)
       end
     end
   end

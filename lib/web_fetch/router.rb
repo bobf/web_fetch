@@ -22,7 +22,9 @@ module WebFetch
       rescue JSON::ParserError
         return { status: 400, payload: I18n.t(:bad_json) }
       end
-      @router.recognize(url, method: method).call(params)
+      route = @router.recognize(url, method: method)
+      # Merge our hand-rolled params with the standard params (e.g. :uid)
+      route.call(route.params.merge(params))
     end
 
     private
@@ -42,8 +44,12 @@ module WebFetch
           resource_finder.call(:gather, params)
         }
 
-        get '/retrieve', to: lambda { |params|
+        get '/retrieve/:uid', to: lambda { |params|
           resource_finder.call(:retrieve, params)
+        }
+
+        get '/find/:uid', to: lambda { |params|
+          resource_finder.call(:find, params)
         }
       end
     end

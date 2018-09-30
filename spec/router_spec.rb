@@ -20,7 +20,12 @@ describe WebFetch::Router do
 
     it 'provides a route to GET /retrieve' do
       expect(WebFetch::Resources).to receive(:retrieve).and_return('hello')
-      expect(router.route('/retrieve', method: 'GET')).to eql 'hello'
+      expect(router.route('/retrieve/123', method: 'GET')).to eql 'hello'
+    end
+
+    it 'provides a route to GET /find' do
+      expect(WebFetch::Resources).to receive(:find).and_return('hello')
+      expect(router.route('/find/123', method: 'GET')).to eql 'hello'
     end
 
     it 'decodes `json` parameter and merges into request params' do

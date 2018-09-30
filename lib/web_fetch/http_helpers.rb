@@ -9,6 +9,16 @@ module WebFetch
       response.send_response
     end
 
+    def pending(result, response)
+      respond_immediately({
+        payload: {
+          uid: result[:request][:uid],
+          pending: true,
+          message: I18n.t(:pending)
+        }
+      }, response)
+    end
+
     def compress(string)
       return string unless accept_gzip?
 
@@ -35,31 +45,31 @@ module WebFetch
       JSON.parse(@http_post_content, symbolize_names: true)
     end
 
-    def succeed(deferred, response)
+    def succeed(request, response)
       response.status = 200
-      response.content = compress(JSON.dump(success(deferred)))
+      response.content = compress(JSON.dump(success(request)))
       response.send_response
     end
 
-    def success(deferred)
-      result = deferred[:http]
+    def success(request)
+      result = request[:deferred]
       { response: {
         success: true,
         body: result.response,
         headers: result.headers,
         status: result.response_header.status
       },
-        uid: deferred[:uid] }
+        uid: request[:uid] }
     end
 
-    def fail_(deferred, response)
+    def fail_(request, response)
       response.status = 200
-      response.content = compress(JSON.dump(failure(deferred)))
+      response.content = compress(JSON.dump(failure(request)))
       response.send_response
     end
 
-    def failure(deferred)
-      result = deferred[:http]
+    def failure(request)
+      result = request[:deferred]
       { response: {
         success: false,
         body: result.response,
@@ -67,7 +77,7 @@ module WebFetch
         status: result.response_header.status,
         error: (result.error&.inspect)
       },
-        uid: deferred[:uid] }
+        uid: request[:uid] }
     end
 
     def accept_gzip?

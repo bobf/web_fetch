@@ -6,15 +6,16 @@ describe WebFetch::Client do
   before(:each) do
     stub_request(:any, 'http://blah.blah/success')
       .to_return(body: 'hello, everybody')
+
+    # XXX: This does not do what we would hope in EventMachine context as it
+    # locks the entire reactor. I really don't know how to make webmock hook
+    # into EM and delay the response so we can test #find_by_uid :(
+    stub_request(:any, 'http://blah.blah/slow_success')
+      .to_return(body: ->(_req) { sleep 0.1; 'hi' })
   end
 
   it 'can be instantiated with host and port params' do
     client
-  end
-
-  describe '#request' do
-    subject { client.request(url: 'http://blah.blah/success') }
-    it { is_expected.to be_a WebFetch::Client::Request }
   end
 
   describe '#alive?' do
@@ -45,6 +46,24 @@ describe WebFetch::Client do
       client.gather([{ url: 'http://blah.blah/success' }])
 
       retrieved = client.retrieve_by_uid('lalalala')
+      expect(retrieved).to be_nil
+    end
+  end
+
+  describe '#find_by_uid' do
+    it 'returns a ready status when has been fetched' do
+      pending 'Find a good way to create a slow response without locking EM'
+      result = client.gather([{ url: 'http://blah.blah/slow_success' }])
+      uid = result.first[:uid]
+
+      found = client.find_by_uid(uid)
+      expect(found[:pending]).to be true
+    end
+
+    it 'returns nil for non-requested items' do
+      client.gather([{ url: 'http://blah.blah/success' }])
+
+      retrieved = client.find_by_uid('lalalala')
       expect(retrieved).to be_nil
     end
   end

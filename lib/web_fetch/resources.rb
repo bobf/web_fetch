@@ -19,13 +19,17 @@ module WebFetch
         end
       end
 
-      def retrieve(server, params)
-        retriever = Retriever.new(server, params)
+      def retrieve(server, params, options = {})
+        retriever = Retriever.new(server, params, options)
         unless retriever.valid?
           return { status: status(:unprocessable),
                    payload: { error: retriever.errors } }
         end
         defer_if_found(retriever)
+      end
+
+      def find(server, params)
+        retrieve(server, params, block: false)
       end
 
       private
@@ -51,7 +55,7 @@ module WebFetch
           { status: status(:not_found),
             payload: { error: retriever.not_found_error } }
         else
-          { deferred: found }
+          { request: found }
         end
       end
     end
