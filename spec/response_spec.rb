@@ -7,6 +7,22 @@ RSpec.describe WebFetch::Response do
   let(:retrieve_url) { "http://#{client.host}:#{client.port}/retrieve/#{uid}" }
   let(:find_url) { "http://#{client.host}:#{client.port}/find/#{uid}" }
 
+  let(:client_success) do
+    double(retrieve_by_uid: { response: { success: true } })
+  end
+
+  let(:client_failure) do
+    double(retrieve_by_uid: { response: { success: false } })
+  end
+
+  let(:client_pending) do
+    double(retrieve_by_uid: { pending: true })
+  end
+
+  let(:client_not_started) do
+    double(retrieve_by_uid: nil)
+  end
+
   subject { response }
 
   it { is_expected.to be_a described_class }
@@ -35,29 +51,51 @@ RSpec.describe WebFetch::Response do
     end
   end
 
-  describe '#complete?' do
-    subject { response.complete? }
+  describe '#result' do
+    before do
+      stub_request(:get, retrieve_url)
+        .to_return(
+          body: { response: { success: true, body: 'abc123' } }.to_json
+        )
+      response.fetch
+    end
+
+    subject { response.result }
+    it { is_expected.to be_a WebFetch::Result }
+    its(:body) { is_expected.to eql 'abc123' }
+  end
+
+  describe '#complete?, #success?, #pending?' do
+    before { response.fetch }
+
+    subject { response }
 
     context 'request succeeded' do
-      before { response.fetch }
-      let(:client) { double(retrieve_by_uid: { response: true }) }
-      it { is_expected.to be true }
+      let(:client) { client_success }
+      its(:complete?) { is_expected.to be true }
+      its(:success?) { is_expected.to be true }
+      its(:pending?) { is_expected.to be false }
     end
 
     context 'request failed' do
-      before { response.fetch }
-      let(:client) { double(retrieve_by_uid: { response: true }) }
-      it { is_expected.to be true }
+      let(:client) { client_failure }
+      its(:complete?) { is_expected.to be true }
+      its(:success?) { is_expected.to be false }
+      its(:pending?) { is_expected.to be false }
     end
 
     context 'request pending' do
-      before { response.fetch }
-      let(:client) { double(retrieve_by_uid: { pending: true }) }
-      it { is_expected.to be false }
+      let(:client) { client_pending }
+      its(:complete?) { is_expected.to be false }
+      its(:success?) { is_expected.to be false }
+      its(:pending?) { is_expected.to be true }
     end
 
     context 'request not started' do
-      it { is_expected.to be false }
+      let(:client) { client_not_started }
+      its(:complete?) { is_expected.to be false }
+      its(:success?) { is_expected.to be false }
+      its(:pending?) { is_expected.to be false }
     end
   end
 

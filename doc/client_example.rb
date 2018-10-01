@@ -22,6 +22,7 @@ begin
 
   responses.each do |response|
     puts response.fetch(wait: true) # Will block (default behaviour)
+    puts "Success: #{response.success?}"
   end
 
   # Use a non-blocking call to `#fetch` and iterate over all responses until
