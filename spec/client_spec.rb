@@ -37,6 +37,17 @@ describe WebFetch::Client do
     end
   end
 
+  describe '#fetch' do
+    let(:responses) { client.gather([{ url: 'http://blah.blah/success' }]) }
+
+    subject { client.fetch(responses.first.uid) }
+
+    it { is_expected.to be_a WebFetch::Result }
+
+    # Tested more extensively in supporting methods #retrieve_by_uid and
+    # #find_by_uid below
+  end
+
   describe '#retrieve_by_uid' do
     it 'retrieves a gathered item' do
       result = client.gather([{ url: 'http://blah.blah/success' }])

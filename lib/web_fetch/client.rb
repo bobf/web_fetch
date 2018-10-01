@@ -50,6 +50,18 @@ module WebFetch
       end
     end
 
+    def fetch(uid, options = {})
+      block = options.fetch(:wait, true)
+
+      response = block ? retrieve_by_uid(uid) : find_by_uid(uid)
+
+      Result.new(
+        body: response[:body],
+        headers: response[:headers],
+        status: response[:status]
+      )
+    end
+
     def retrieve_by_uid(uid)
       response = get("retrieve/#{uid}")
       return nil unless response.success?
