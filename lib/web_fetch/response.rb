@@ -24,7 +24,7 @@ module WebFetch
 
     def complete?
       return false if @result.nil?
-      return false if @result.pending?
+      return false if pending?
       return true if @result
 
       false
@@ -33,7 +33,7 @@ module WebFetch
     def pending?
       return false if @result.nil?
 
-      @result.pending?
+      @result == :pending
     end
 
     def success?
@@ -48,14 +48,16 @@ module WebFetch
 
     def build_result
       return nil if @raw_result.nil?
-      return nil unless @raw_result[:response] || @raw_result[:pending]
-      return Result.new(pending: true) if @raw_result[:pending]
+      return :pending if @raw_result[:pending]
+      return nil unless @raw_result[:response]
 
       response = @raw_result[:response]
       Result.new(
         body: response[:body],
         headers: response[:headers],
-        status: response[:status]
+        status: response[:status],
+        success: @raw_result[:success],
+        uid: @uid
       )
     end
   end

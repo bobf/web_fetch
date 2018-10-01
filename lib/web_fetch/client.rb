@@ -53,12 +53,17 @@ module WebFetch
     def fetch(uid, options = {})
       block = options.fetch(:wait, true)
 
-      response = block ? retrieve_by_uid(uid) : find_by_uid(uid)
+      outcome = block ? retrieve_by_uid(uid) : find_by_uid(uid)
+      return :pending if outcome[:pending]
+
+      response = outcome[:response]
 
       Result.new(
         body: response[:body],
         headers: response[:headers],
-        status: response[:status]
+        status: response[:status],
+        success: response[:success],
+        uid: outcome[:uid]
       )
     end
 

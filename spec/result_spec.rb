@@ -3,7 +3,12 @@
 RSpec.describe WebFetch::Result do
   let(:result) do
     described_class.new(
-      body: 'abc123', headers: { 'Foo' => 'Bar' }, status: 200, pending: false
+      body: 'abc123',
+      headers: { 'Foo' => 'Bar' },
+      status: 200,
+      pending: false,
+      success: true,
+      uid: 'uid123'
     )
   end
 
@@ -15,4 +20,6 @@ RSpec.describe WebFetch::Result do
   its(:status) { is_expected.to eql 200 }
   its(:pending?) { is_expected.to be false }
   its(:complete?) { is_expected.to be true }
+  its(:success?) { is_expected.to be true }
+  its(:uid) { is_expected.to eql 'uid123' }
 end
