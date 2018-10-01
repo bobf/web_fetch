@@ -12,3 +12,5 @@ en:
   hash_not_found: "Provided `hash` has not yet been requested"
 
   pending: "Your request is still being processed"
+
+  no_request: "No active request found for UID: %{uid}"

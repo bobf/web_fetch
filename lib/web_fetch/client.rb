@@ -55,6 +55,8 @@ module WebFetch
       block = options.fetch(:wait, true)
 
       outcome = block ? retrieve_by_uid(uid) : find_by_uid(uid)
+      no_request_error(uid) if outcome.nil?
+
       return :pending if outcome[:pending]
 
       response = outcome[:response]
@@ -129,7 +131,11 @@ module WebFetch
     end
 
     def handle_error(errors)
-      raise WebFetch::ClientError, errors
+      raise WebFetch::ClientError.new(errors)
+    end
+
+    def no_request_error(uid)
+      raise RequestNotFoundError.new([I18n.t('no_request', uid: uid)])
     end
   end
 end
