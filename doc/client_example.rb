@@ -2,6 +2,8 @@
 
 # Run me with:
 # bundle exec ruby doc/client_example.rb
+#
+# rubocop:disable all
 require 'web_fetch'
 
 urls = ['http://localhost:8077/',
@@ -38,3 +40,4 @@ begin
 ensure
   client.stop
 end
+# rubocop:enable all

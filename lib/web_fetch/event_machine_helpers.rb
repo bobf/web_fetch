@@ -3,6 +3,17 @@
 module WebFetch
   # EventMachine layer-specific helpers
   module EventMachineHelpers
+    def request_async(request)
+      async_request = EM::HttpRequest.new(request[:url])
+      method = request.fetch(:method, 'GET').downcase.to_sym
+      async_request.public_send(
+        method,
+        head: request[:headers],
+        query: request.fetch(:query, {}),
+        body: request.fetch(:body, nil)
+      )
+    end
+
     def apply_callbacks(request)
       request[:deferred].callback do
         Logger.debug("HTTP fetch complete for uid: #{request[:uid]}")

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   class Response
     attr_reader :uid, :request, :result
@@ -10,6 +12,7 @@ module WebFetch
 
     def fetch(options = {})
       return @result if complete?
+
       block = options.fetch(:wait, true)
       @raw_result = find_or_retrieve(block)
       (@result = build_result)
@@ -29,6 +32,7 @@ module WebFetch
 
     def pending?
       return false if @result.nil?
+
       @result.pending?
     end
 
@@ -46,6 +50,7 @@ module WebFetch
       return nil if @raw_result.nil?
       return nil unless @raw_result[:response] || @raw_result[:pending]
       return Result.new(pending: true) if @raw_result[:pending]
+
       response = @raw_result[:response]
       Result.new(
         body: response[:body],

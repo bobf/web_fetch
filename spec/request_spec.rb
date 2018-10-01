@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe WebFetch::Request do
   let(:request) do
     described_class.new do |request|

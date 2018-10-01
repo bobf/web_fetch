@@ -11,12 +11,12 @@ module WebFetch
 
     def pending(result, response)
       respond_immediately({
-        payload: {
-          uid: result[:request][:uid],
-          pending: true,
-          message: I18n.t(:pending)
-        }
-      }, response)
+                            payload: {
+                              uid: result[:request][:uid],
+                              pending: true,
+                              message: I18n.t(:pending)
+                            }
+                          }, response)
     end
 
     def compress(string)

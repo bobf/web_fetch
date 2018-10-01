@@ -15,21 +15,21 @@ module WebFetch
     def route(url, options = {})
       @server = options.delete(:server)
       options = { query_string: nil, method: 'GET' }.merge(options)
-      method = options[:method].downcase.to_sym
+
       Logger.info("#{url}: #{options}")
-      begin
-        params = build_params(options)
-      rescue JSON::ParserError
-        return { status: 400, payload: I18n.t(:bad_json) }
-      end
-      route = @router.recognize(url, method: method)
-      # Merge our hand-rolled params with the standard params (e.g. :uid)
-      route.call(route.params.merge(params))
+
+      json_params = build_params(options)
+      return { status: 400, payload: I18n.t(:bad_json) } if json_params.nil?
+
+      resource = @router.recognize(
+        url, method: normalize_http_method(options[:method])
+      )
+      resource.call(resource.params.merge(json_params))
     end
 
     private
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def setup
       resource_finder = lambda do |name, env|
         Resources.public_send(name, @server, env)
@@ -53,7 +53,7 @@ module WebFetch
         }
       end
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def build_params(options)
       params = Rack::Utils.parse_nested_query(options[:query_string])
@@ -61,6 +61,8 @@ module WebFetch
       params = symbolize(params)
       params.merge!(options[:post_data] || {})
       params
+    rescue JSON::ParserError
+      nil
     end
 
     def merge_json(params)
@@ -72,6 +74,10 @@ module WebFetch
 
     def merge_json!(params)
       params.merge!(merge_json(params))
+    end
+
+    def normalize_http_method(method)
+      method.downcase.to_sym
     end
   end
 end

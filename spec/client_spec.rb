@@ -11,7 +11,7 @@ describe WebFetch::Client do
     # locks the entire reactor. I really don't know how to make webmock hook
     # into EM and delay the response so we can test #find_by_uid :(
     stub_request(:any, 'http://blah.blah/slow_success')
-      .to_return(body: ->(_req) { sleep 0.1; 'hi' })
+      .to_return(body: ->(_req) { sleep(0.1) && 'hi' })
   end
 
   it 'can be instantiated with host and port params' do
@@ -26,11 +26,11 @@ describe WebFetch::Client do
 
   describe '#gather' do
     it 'makes `gather` requests to a running server' do
-      request = WebFetch::Request.new do |request|
+      web_request = WebFetch::Request.new do |request|
         request.url = 'http://blah.blah/success'
         request.custom = { my_key: 'my_value' }
       end
-      result = client.gather([request])
+      result = client.gather([web_request])
       expect(result.first).to be_a WebFetch::Response
       expect(result.first.uid).to_not be_nil
       expect(result.first.custom).to eql(my_key: 'my_value')

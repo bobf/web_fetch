@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe WebFetch::Response do
   let(:uid) { 'abc123' }
   let(:request) { { url: 'http://blah', custom: { my_key: 'my_value' } } }

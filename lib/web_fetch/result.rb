@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   class Result
     attr_reader :body, :headers, :status

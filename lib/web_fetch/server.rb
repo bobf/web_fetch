@@ -20,9 +20,25 @@ module WebFetch
     def process_http_request
       result = @router.route(@http_request_uri, request_params)
       response = EM::DelegatedHttpResponse.new(self)
-
       default_headers(response)
+      outcome(result, response)
+    end
 
+    # Note that #gather is called by WebFetch itself to asynchronously gather
+    # the required HTTP objects. All public API requests go via
+    # #process_http_request and subsequently WebFetch::Router#route
+    def gather(targets)
+      targets.each do |target|
+        http = request_async(target[:request])
+        request = { uid: target[:uid], deferred: http }
+        apply_callbacks(request)
+        @storage.store(target[:uid], request)
+      end
+    end
+
+    private
+
+    def outcome(result, response)
       # User requested an unrecognised ID
       return respond_immediately(result, response) if result[:request].nil?
 
@@ -35,24 +51,6 @@ module WebFetch
 
       # User requested blocking call
       wait_for_response(result[:request], response)
-    end
-
-    # Note that #gather is called by WebFetch itself to asynchronously gather
-    # the required HTTP objects. All public API requests go via
-    # #process_http_request and subsequently WebFetch::Router#route
-    def gather(targets)
-      targets.each do |target|
-        request = target[:request]
-        async_request = EM::HttpRequest.new(request[:url])
-        method = request.fetch(:method, 'GET').downcase.to_sym
-        http = async_request.public_send(method,
-                                         head: request[:headers],
-                                         query: request.fetch(:query, {}),
-                                         body: request.fetch(:body, nil))
-        request = { uid: target[:uid], deferred: http }
-        apply_callbacks(request)
-        @storage.store(target[:uid], request)
-      end
     end
   end
 end
