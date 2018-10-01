@@ -35,6 +35,10 @@ describe WebFetch::Client do
       expect(result.first.uid).to_not be_nil
       expect(result.first.custom).to eql(my_key: 'my_value')
     end
+
+    it 'passes any WebFetch server errors back to the user' do
+      expect { client.gather([]) }.to raise_error WebFetch::ClientError
+    end
   end
 
   describe '#fetch' do

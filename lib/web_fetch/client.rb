@@ -42,7 +42,8 @@ module WebFetch
     def gather(requests)
       json = JSON.dump(requests: requests.map(&:to_h))
       response = post('gather', json)
-      return nil unless response.success?
+
+      handle_error(JSON.parse(response.body)['error']) if !response.success?
 
       requests = JSON.parse(response.body, symbolize_names: true)[:requests]
       requests.map do |request|
@@ -125,6 +126,10 @@ module WebFetch
         request.url "/#{endpoint}"
         request.body = body
       end
+    end
+
+    def handle_error(errors)
+      raise WebFetch::ClientError, errors
     end
   end
 end
