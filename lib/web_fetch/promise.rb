@@ -52,6 +52,10 @@ module WebFetch
       return nil unless @raw_result[:response]
 
       response = @raw_result[:response]
+      new_result(response)
+    end
+
+    def new_result(response)
       Result.new(
         body: response[:body],
         headers: response[:headers],

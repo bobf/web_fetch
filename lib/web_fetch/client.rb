@@ -4,6 +4,8 @@ module WebFetch
   # Client to be used in application code. Capable of spawning a server and
   # interacting with it to gather requests and retrieve them
   class Client
+    include ClientHttp
+
     attr_reader :host, :port
 
     def initialize(host, port, options = {})
@@ -43,12 +45,10 @@ module WebFetch
       json = JSON.dump(requests: requests.map(&:to_h))
       response = post('gather', json)
 
-      handle_error(JSON.parse(response.body)['error']) if !response.success?
+      handle_error(JSON.parse(response.body)['error']) unless response.success?
 
       requests = JSON.parse(response.body, symbolize_names: true)[:requests]
-      requests.map do |request|
-        Promise.new(self, uid: request[:uid], request: request[:request])
-      end
+      promises(requests)
     end
 
     def fetch(uid, options = {})
@@ -59,15 +59,7 @@ module WebFetch
 
       return :pending if outcome[:pending]
 
-      response = outcome[:response]
-
-      Result.new(
-        body: response[:body],
-        headers: response[:headers],
-        status: response[:status],
-        success: response[:success],
-        uid: outcome[:uid]
-      )
+      new_result(outcome)
     end
 
     def retrieve_by_uid(uid)
@@ -110,32 +102,29 @@ module WebFetch
 
     private
 
-    def base_uri
-      "http://#{@host}:#{@port}"
-    end
-
-    def get(endpoint, params = {})
-      conn = Faraday.new(url: base_uri)
-      conn.get do |request|
-        request.url "/#{endpoint}"
-        request.params.merge!(params)
-      end
-    end
-
-    def post(endpoint, body)
-      conn = Faraday.new(url: base_uri)
-      conn.post do |request|
-        request.url "/#{endpoint}"
-        request.body = body
-      end
-    end
-
     def handle_error(errors)
-      raise WebFetch::ClientError.new(errors)
+      raise WebFetch::ClientError, errors
     end
 
     def no_request_error(uid)
-      raise RequestNotFoundError.new([I18n.t('no_request', uid: uid)])
+      raise RequestNotFoundError, [I18n.t('no_request', uid: uid)]
+    end
+
+    def new_result(outcome)
+      response = outcome[:response]
+      Result.new(
+        body: response[:body],
+        headers: response[:headers],
+        status: response[:status],
+        success: response[:success],
+        uid: outcome[:uid]
+      )
+    end
+
+    def promises(requests)
+      requests.map do |request|
+        Promise.new(self, uid: request[:uid], request: request[:request])
+      end
     end
   end
 end
