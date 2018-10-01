@@ -23,7 +23,8 @@ begin
   responses = client.gather($requests)
 
   responses.each do |response|
-    puts response.fetch(wait: true) # Will block (default behaviour)
+    response.fetch(wait: true) # Will block (default behaviour)
+    puts response.result.body
     puts "Success: #{response.success?}"
   end
 
@@ -35,6 +36,7 @@ begin
   while responses.any? { |response| !response.complete? }
     responses.each do |response|
       response.fetch(wait: false) # Will not block
+      puts response.result.body
     end
   end
 ensure
