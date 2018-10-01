@@ -16,5 +16,9 @@ module WebFetch
     def pending?
       @pending
     end
+
+    def complete?
+      !pending?
+    end
   end
 end

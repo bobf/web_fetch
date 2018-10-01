@@ -14,4 +14,5 @@ RSpec.describe WebFetch::Result do
   its(:headers) { are_expected.to eql('Foo' => 'Bar') }
   its(:status) { is_expected.to eql 200 }
   its(:pending?) { is_expected.to be false }
+  its(:complete?) { is_expected.to be true }
 end
