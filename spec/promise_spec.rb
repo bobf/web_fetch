@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe WebFetch::Response do
+RSpec.describe WebFetch::Promise do
   let(:uid) { 'abc123' }
   let(:request) { { url: 'http://blah', custom: { my_key: 'my_value' } } }
   let(:options) { { uid: uid, request: request } }

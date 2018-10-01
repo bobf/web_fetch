@@ -31,7 +31,7 @@ describe WebFetch::Client do
         request.custom = { my_key: 'my_value' }
       end
       result = client.gather([web_request])
-      expect(result.first).to be_a WebFetch::Response
+      expect(result.first).to be_a WebFetch::Promise
       expect(result.first.uid).to_not be_nil
       expect(result.first.custom).to eql(my_key: 'my_value')
     end

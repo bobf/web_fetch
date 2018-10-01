@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WebFetch
-  class Response
+  class Promise
     attr_reader :uid, :request, :result
 
     def initialize(client, options = {})
@@ -56,7 +56,7 @@ module WebFetch
         body: response[:body],
         headers: response[:headers],
         status: response[:status],
-        success: @raw_result[:success],
+        success: @raw_result[:response][:success],
         uid: @uid
       )
     end
