@@ -2,15 +2,13 @@
 
 ## Overview
 
-WebFetch is an asynchronous HTTP proxy server that accepts multiple requests for HTTP retrieval, immediately returning a token for each request, allowing that token to be redeemed later when the entity has fully responded.
+WebFetch executes concurrent, asynchronous HTTP requests. It is itself an HTTP server implementing a RESTful API, wrapped by a Ruby client interface. Instead of returning a response, WebFetch immediately returns a *promise* which can be redeemed later when the response has been processed.
 
 This permits issuing multiple HTTP requests in parallel, in a fully encapsulated and external process, without having to resort to multi-threading, multi-processing, or complex non-blocking IO implementations. [EventMachine][1] is used to handle the heavy lifting.
 
 ![WebFetch architecture][2]
 
 ## Getting Started
-
-Although WebFetch runs as a web server and provides all functionality over a RESTful API (see below), the simplest way to use it is with its Ruby client implementation which wraps the HTTP API for you using [Faraday][3]. This also serves as a [reference][4] for writing WebFetch clients in other languages.
 
 In your `Gemfile`, add:
 
@@ -24,14 +22,30 @@ and update your bundle:
 bundle install
 ```
 
-Create, connect to, and wrap a Ruby client object around a new WebFetch server instance, listening as `localhost` on port `8077`:
+Require WebFetch in your application:
 
 ``` ruby
 require 'web_fetch'
+```
+
+### Launch or connect to a server
+
+Launch the server from your application (recommended for familiarising yourself
+with WebFetch):
+
+``` ruby
 client = WebFetch::Client.create('localhost', 8077)
 ```
 
-### Creating a request
+Or connect to an existing WebFetch server (recommended for production systems - see [below](#process-management) for more details):
+
+``` ruby
+client = WebFetch::Client.new('localhost', 8077)
+```
+
+### Create a request
+
+Create a WebFetch request. Note that the request will not begin until the next step:
 
 ``` ruby
 request = WebFetch::Request.new do |req|
@@ -61,7 +75,9 @@ request = WebFetch::Request.from_hash(
 )
 ```
 
-### Gathering responses
+### Gather responses
+
+Ask WebFetch to begin gathering your HTTP requests in the background:
 
 ``` ruby
 promises = client.gather([request])
@@ -73,9 +89,13 @@ To retrieve the result of a request, call `WebFetch::Promise#fetch`
 
 ``` ruby
 result = promises.first.fetch
-puts result.body
-puts result.headers
-puts result.status
+
+# Available methods:
+result.body
+result.headers
+result.status # HTTP status code
+result.success? # False if a network error (not HTTP error) occurred
+result.error # Underlying network error if applicable
 ```
 
 Note that `WebFech::Promise#fetch` will block until the result is complete by default. If you want to continue executing other code if the result is not ready (e.g. to see if any other results are ready), you can pass `wait: false`
@@ -94,7 +114,7 @@ result = promises.first.fetch if promises.first.complete?
 
 ### Fetching results later
 
-In some cases you may need to fetch the result in a different context to which you initiated the request in. A unique ID is available for each *Promise* which can be used to fetch the result from a separate *Client* instance:
+In some cases you may need to fetch the result of a request in a different context to which you initiated it. A unique ID is available for each *Promise* which can be used to fetch the result from a separate *Client* instance:
 
 ``` ruby
 client = WebFetch::Client.new('localhost', 8077)
@@ -108,9 +128,7 @@ client = WebFetch::Client.new('localhost', 8077)
 result = client.fetch(uid)
 ```
 
-(See [below](#new-vs-create) for the difference between `WebFetch::Client.new` and `WebFetch::Client.create`)
-
-This can be useful if your web application initiates requests in one controller action and fetches them in another.
+This can be useful if your web application initiates requests in one controller action and fetches them in another; the `uid` can be stored in a database and used to fetch the request later on.
 
 ### Stopping the server
 
@@ -130,7 +148,7 @@ The server will not automatically stop when your program exits.
 
 If you need to use the WebFetch server's HTTP API directly refer to the [Swagger API Reference][6]
 
-## Managing the WebFetch process yourself
+## Managing the WebFetch process yourself <a name='process-management'></a>
 
 For production systems it is advised that you run the WebFetch server separately rather than instantiate it via the client. For this case, the executable `bin/web_fetch_control` is provided. Daemonisation is handled by the [daemons][7] gem.
 
@@ -139,38 +157,45 @@ WebFetch can be started in the terminal with output going to STDOUT or as a daem
 Run the server as a daemon:
 
 ```
-$ bundle exec bin/web_fetch_control start -- --log /tmp/web_fetch.log
+$ web_fetch_control start
 ```
-
-**Note that you should always pass `--log` when running as a daemon otherwise all output will go to the null device.**
 
 Run the server in the terminal:
 
 ```
-$ bundle exec bin/web_fetch_control run -- --port 8080
+$ web_fetch_control run
 ```
 
-It is further recommended to use a process management tool to monitor the pidfile (pass `--pidfile /path/to/file.pid` to specify an explicit location).
-
-<a name='new-vs-create'></a>To connect to an existing process, use `WebFetch::Client.new` rather than `WebFetch::Client.create`. For example:
-
-``` ruby
-WebFetch::Client.new('localhost', 8087)
-```
-
-## Logging
-
-WebFetch logs to STDOUT by default. An alternative log file can be set either
-by passing `--log /path/to/logfile` to the command line server, or by passing
-`log: '/path/to/logfile'` to `WebFetch::Client.create`:
+Stop the server:
 
 ```
-$ bundle exec bin/web_fetch_server --log /tmp/web_fetch.log
+$ web_fetch_control stop
 ```
 
+To pass options to WebFetch, pass `--` to `web_fetch_control` and add all WebFetch options afterwards.
+
+Available options:
+
 ```
-client = WebFetch::Client.create('localhost', 8077, log: '/tmp/web_fetch.log')
+--port 60087
+--host localhost
+--pidfile /tmp/web_fetch.pid
+--log /var/log/web_fetch.log
 ```
+
+e.g.:
+
+```
+web_fetch_control run -- --port 8000 --host 0.0.0.0
+```
+
+No pid file will be created unless the `--pidfile` parameter is passed. It is recommended to use a process monitoring tool (e.g. `monit` or `systemd`) to monitor the WebFetch process.
+
+When running as a daemon, WebFetch will log to the null device so it is advised to always pass `--log` in this case.
+
+## Docker
+
+To use WebFetch in Docker you can either use the provided [`Dockerfile`](docker/Dockerfile) or the public image [`web_fetch/web_fetch`](https://hub.docker.com/r/webfetch/webfetch/)
 
 ## Contributing
 

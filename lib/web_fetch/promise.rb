@@ -40,6 +40,11 @@ module WebFetch
       complete? && @raw_result[:response][:success]
     end
 
+    def error
+      return nil unless complete?
+      @raw_result[:response][:error]
+    end
+
     private
 
     def find_or_retrieve(block)
@@ -61,6 +66,7 @@ module WebFetch
         headers: response[:headers],
         status: response[:status],
         success: @raw_result[:response][:success],
+        error: @raw_result[:response][:error],
         uid: @uid
       )
     end

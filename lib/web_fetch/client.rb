@@ -117,6 +117,7 @@ module WebFetch
         headers: response[:headers],
         status: response[:status],
         success: response[:success],
+        error: response[:error],
         uid: outcome[:uid]
       )
     end

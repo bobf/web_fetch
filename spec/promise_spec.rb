@@ -14,7 +14,7 @@ RSpec.describe WebFetch::Promise do
   end
 
   let(:client_failure) do
-    double(retrieve_by_uid: { response: { success: false } })
+    double(retrieve_by_uid: { response: { success: false, error: 'foo' } })
   end
 
   let(:client_pending) do
@@ -67,7 +67,7 @@ RSpec.describe WebFetch::Promise do
     its(:body) { is_expected.to eql 'abc123' }
   end
 
-  describe '#complete?, #success?, #pending?' do
+  describe '#complete?, #success?, #pending?, #error' do
     before { response.fetch }
 
     subject { response }
@@ -77,6 +77,7 @@ RSpec.describe WebFetch::Promise do
       its(:complete?) { is_expected.to be true }
       its(:success?) { is_expected.to be true }
       its(:pending?) { is_expected.to be false }
+      its(:error) { is_expected.to be_nil }
     end
 
     context 'request failed' do
@@ -84,6 +85,7 @@ RSpec.describe WebFetch::Promise do
       its(:complete?) { is_expected.to be true }
       its(:success?) { is_expected.to be false }
       its(:pending?) { is_expected.to be false }
+      its(:error) { is_expected.to eql 'foo' }
     end
 
     context 'request pending' do
@@ -91,6 +93,7 @@ RSpec.describe WebFetch::Promise do
       its(:complete?) { is_expected.to be false }
       its(:success?) { is_expected.to be false }
       its(:pending?) { is_expected.to be true }
+      its(:error) { is_expected.to be_nil }
     end
 
     context 'request not started' do
@@ -98,6 +101,7 @@ RSpec.describe WebFetch::Promise do
       its(:complete?) { is_expected.to be false }
       its(:success?) { is_expected.to be false }
       its(:pending?) { is_expected.to be false }
+      its(:error) { is_expected.to be_nil }
     end
   end
 
