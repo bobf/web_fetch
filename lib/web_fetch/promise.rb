@@ -42,6 +42,7 @@ module WebFetch
 
     def error
       return nil unless complete?
+
       @raw_result[:response][:error]
     end
 
