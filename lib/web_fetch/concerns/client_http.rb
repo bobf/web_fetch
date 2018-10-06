@@ -12,6 +12,8 @@ module WebFetch
         request.url "/#{endpoint}"
         request.params.merge!(params)
       end
+    rescue Faraday::ConnectionFailed => e
+      raise ClientError, e.message
     end
 
     def post(endpoint, body)
@@ -20,6 +22,8 @@ module WebFetch
         request.url "/#{endpoint}"
         request.body = body
       end
+    rescue Faraday::ConnectionFailed => e
+      raise ClientError, e.message
     end
   end
 end

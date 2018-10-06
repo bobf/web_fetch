@@ -2,10 +2,11 @@
 
 module WebFetch
   class Error < StandardError
-    attr_reader :errors
+    attr_reader :error
 
-    def initialize(errors = nil)
-      @errors = errors
+    def initialize(error)
+      super
+      @error = error
     end
   end
 

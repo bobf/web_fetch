@@ -33,7 +33,7 @@ module WebFetch
     def alive?
       begin
         response = get('')
-      rescue Faraday::ConnectionFailed
+      rescue ClientError
         return false
       end
       return false unless response.success?
@@ -102,8 +102,8 @@ module WebFetch
 
     private
 
-    def handle_error(errors)
-      raise WebFetch::ClientError, errors
+    def handle_error(error)
+      raise WebFetch::ClientError, error
     end
 
     def no_request_error(uid)

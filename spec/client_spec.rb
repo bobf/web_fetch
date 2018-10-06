@@ -25,11 +25,14 @@ describe WebFetch::Client do
   end
 
   describe '#gather' do
-    it 'makes `gather` requests to a running server' do
-      web_request = WebFetch::Request.new do |request|
+    let(:web_request) do
+      WebFetch::Request.new do |request|
         request.url = 'http://blah.blah/success'
         request.custom = { my_key: 'my_value' }
       end
+    end
+
+    it 'makes `gather` requests to a running server' do
       result = client.gather([web_request])
       expect(result.first).to be_a WebFetch::Promise
       expect(result.first.uid).to_not be_nil
@@ -38,6 +41,19 @@ describe WebFetch::Client do
 
     it 'passes any WebFetch server errors back to the user' do
       expect { client.gather([]) }.to raise_error WebFetch::ClientError
+    end
+
+    context 'handling errors when connecting to WebFetch server' do
+      let(:client) { WebFetch::Client.new('localhost', 8090) }
+
+      before do
+        stub_request(:any, %r{http://localhost:8090})
+          .to_return { raise Faraday::ConnectionFailed, 'foobar' }
+      end
+
+      subject { proc { client.gather([web_request]) } }
+
+      it { is_expected.to raise_error WebFetch::ClientError }
     end
   end
 
