@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 module WebFetch
-  class Error < StandardError
-    attr_reader :errors
-
-    def initialize(errors = nil)
-      @errors = errors
-    end
-  end
+  class Error < StandardError; end
 
   class ClientError < Error; end
 
