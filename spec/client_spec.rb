@@ -63,6 +63,7 @@ describe WebFetch::Client do
     subject { client.fetch(responses.first.uid) }
 
     it { is_expected.to be_a WebFetch::Result }
+
     context 'no matching request found' do
       subject { proc { client.fetch('not-found') } }
       it { is_expected.to raise_error WebFetch::RequestNotFoundError }
@@ -80,6 +81,7 @@ describe WebFetch::Client do
       retrieved = client.retrieve_by_uid(uid)
       expect(retrieved[:response][:status]).to eql 200
       expect(retrieved[:response][:body]).to eql 'hello, everybody'
+      expect(retrieved[:response][:response_time]).to be_a Float
       expect(retrieved[:uid]).to eql uid
     end
 

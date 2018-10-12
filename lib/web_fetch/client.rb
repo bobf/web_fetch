@@ -112,7 +112,8 @@ module WebFetch
         status: response[:status],
         success: response[:success],
         error: response[:error],
-        uid: outcome[:uid]
+        uid: outcome[:uid],
+        response_time: outcome[:response_time]
       )
     end
 

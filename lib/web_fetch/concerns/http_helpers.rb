@@ -58,7 +58,8 @@ module WebFetch
         success: true,
         body: result.response,
         headers: result.headers,
-        status: result.response_header.status
+        status: result.response_header.status,
+        response_time: request[:response_time]
       },
         uid: request[:uid] }
     end
@@ -77,6 +78,7 @@ module WebFetch
         body: result.response,
         headers: result.headers,
         status: result.response_header.status,
+        response_time: request[:response_time],
         error: (result.error&.inspect)
       },
         uid: request[:uid] }

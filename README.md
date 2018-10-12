@@ -96,6 +96,7 @@ result.headers
 result.status # HTTP status code
 result.success? # False if a network error (not HTTP error) occurred
 result.error # Underlying network error if applicable
+result.response_time
 ```
 
 Note that `WebFech::Promise#fetch` will block until the result is complete by default. If you want to continue executing other code if the result is not ready (e.g. to see if any other results are ready), you can pass `wait: false`
