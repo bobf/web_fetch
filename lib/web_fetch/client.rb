@@ -16,17 +16,17 @@ module WebFetch
 
     def self.create(host, port, options = {})
       # Will block until process is responsive
-      process = spawn(host, port, options)
+      process = build_process(host, port, options)
       client = new(host, port, process: process)
       sleep 0.1 until client.alive?
       client
     end
 
     def stop
-      # Will block until process dies
       return if @process.nil?
 
-      @process.stop
+      @process.terminate
+      # Will block until process dies
       @process.wait
     end
 
@@ -77,22 +77,16 @@ module WebFetch
     end
 
     class << self
-      def spawn(host, port, options)
-        process = build_process(host, port, options)
-        process.cwd = File.join(File.dirname(__dir__), '..')
-        process.io.inherit!
-        process.start
-        process
-      end
-
-      private
-
       def build_process(host, port, options)
         command = options.fetch(:start_command, standard_start_command)
         args = ['--host', host, '--port', port.to_s]
         args += ['--log', options[:log]] unless options[:log].nil?
         args.push('--daemonize') if options[:daemonize]
-        ChildProcess.build(*command, *args)
+        Subprocess.popen(command + args, cwd: cwd)
+      end
+
+      def cwd
+        File.join(File.dirname(__dir__), '..')
       end
 
       def standard_start_command
