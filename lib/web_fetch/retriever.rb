@@ -17,7 +17,6 @@ module WebFetch
     def find
       request = @server.storage.fetch(@uid)
       return not_found if request.nil?
-      return not_found if request.nil?
       return request.merge(pending: true) if pending?(request)
 
       request
@@ -42,6 +41,7 @@ module WebFetch
     def pending?(request)
       return false if request.nil?
       return false if request[:succeeded]
+      return false if request[:failed]
       # User requested blocking operation so we will wait until item is ready
       # rather than return a `pending` status
       return false if @block
