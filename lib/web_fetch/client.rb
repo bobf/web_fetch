@@ -106,6 +106,10 @@ module WebFetch
 
     def new_result(outcome)
       response = outcome[:response]
+      # FIXME: This is sort-of duplicated from `Promise#new_result` but we
+      # build it very slightly differently. This means we have to update in
+      # both places if we change the structure. Not quite sure how to unify
+      # this and ensure the same structure in both places.
       Result.new(
         body: response[:body],
         headers: response[:headers],
@@ -113,7 +117,7 @@ module WebFetch
         success: response[:success],
         error: response[:error],
         uid: outcome[:uid],
-        response_time: outcome[:response_time]
+        response_time: response[:response_time]
       )
     end
 
