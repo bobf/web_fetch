@@ -62,13 +62,16 @@ module WebFetch
     end
 
     def new_result(response)
+      # XXX: Any changes to this structure need to be reflected by
+      # `Client#new_result`
       Result.new(
         body: response[:body],
         headers: response[:headers],
         status: response[:status],
         success: @raw_result[:response][:success],
         error: @raw_result[:response][:error],
-        uid: @uid
+        uid: @uid,
+        response_time: @raw_result[:response_time]
       )
     end
   end

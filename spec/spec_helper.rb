@@ -14,7 +14,7 @@ WebFetch::Logger.logger(File::NULL)
 
 Thread.new do
   EM.run do
-    EM.start_server 'localhost', 8089, WebFetch::Server
+    EM.start_server 'localhost', 60_085, WebFetch::Server
   end
 end
 waiting = true

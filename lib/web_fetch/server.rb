@@ -29,8 +29,10 @@ module WebFetch
     # #process_http_request and subsequently WebFetch::Router#route
     def gather(targets)
       targets.each do |target|
-        http = request_async(target[:request])
-        request = { uid: target[:uid], deferred: http }
+        http = request_async(target)
+        request = { uid: target[:uid],
+                    start_time: target[:start_time],
+                    deferred: http }
         apply_callbacks(request)
         @storage.store(target[:uid], request)
       end

@@ -10,7 +10,7 @@ require 'json'
 require 'digest'
 require 'securerandom'
 require 'faraday'
-require 'childprocess'
+require 'subprocess'
 require 'active_support/gzip'
 
 locales_path = File.expand_path('../config/locales/*.yml', __dir__)
@@ -26,10 +26,9 @@ end
 
 require 'web_fetch/logger'
 require 'web_fetch/helpers'
-require 'web_fetch/event_machine_helpers'
-require 'web_fetch/http_helpers'
-require 'web_fetch/concerns/validatable'
+require 'web_fetch/concerns/event_machine_helpers'
 require 'web_fetch/concerns/http_helpers'
+require 'web_fetch/concerns/validatable'
 require 'web_fetch/concerns/client_http'
 require 'web_fetch/storage'
 require 'web_fetch/server'

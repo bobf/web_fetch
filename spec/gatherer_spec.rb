@@ -5,7 +5,7 @@ describe WebFetch::Gatherer do
 
   let(:valid_params) do
     { requests: [
-      { url: 'http://localhost:8089' },
+      { url: 'http://localhost:60085' },
       { url: 'http://remotehost:8089' }
     ] }
   end

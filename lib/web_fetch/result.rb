@@ -2,7 +2,7 @@
 
 module WebFetch
   class Result
-    attr_reader :body, :headers, :status, :error, :uid
+    attr_reader :body, :headers, :status, :error, :uid, :response_time
 
     def initialize(options = {})
       @pending = options.fetch(:pending, false)
@@ -14,6 +14,7 @@ module WebFetch
       @success = options.fetch(:success)
       @error = options.fetch(:error)
       @uid = options.fetch(:uid)
+      @response_time = options.fetch(:response_time)
     end
 
     def pending?

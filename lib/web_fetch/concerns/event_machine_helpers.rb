@@ -3,7 +3,9 @@
 module WebFetch
   # EventMachine layer-specific helpers
   module EventMachineHelpers
-    def request_async(request)
+    def request_async(target)
+      request = target[:request]
+      target[:start_time] = Time.now.utc
       async_request = EM::HttpRequest.new(request[:url])
       method = request.fetch(:method, 'GET').downcase.to_sym
       async_request.public_send(
@@ -17,11 +19,13 @@ module WebFetch
     def apply_callbacks(request)
       request[:deferred].callback do
         Logger.debug("HTTP fetch complete for uid: #{request[:uid]}")
+        save_response_time(request)
         request[:succeeded] = true
       end
 
       request[:deferred].errback do
         Logger.debug("HTTP fetch failed for uid: #{request[:uid]}")
+        save_response_time(request)
         request[:failed] = true
       end
     end
@@ -44,6 +48,10 @@ module WebFetch
           :stop
         end
       end
+    end
+
+    def save_response_time(request)
+      request[:response_time] = Time.now.utc - request[:start_time]
     end
   end
 end
