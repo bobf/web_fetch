@@ -1,5 +1,11 @@
 # WebFetch
 
+```
+And it turns out she's got everything I want
+All rolled into one
+                                --Nickelback
+```
+
 ## Overview
 
 WebFetch executes concurrent, asynchronous HTTP requests. It is itself an HTTP server implementing a RESTful API, wrapped by a Ruby client interface. Instead of returning a response, WebFetch immediately returns a *promise* which can be redeemed later when the response has been processed.
