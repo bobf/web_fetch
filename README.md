@@ -1,9 +1,8 @@
 # WebFetch
 
 ```
-And it turns out she's got everything I want
-All rolled into one
-                                --Nickelback
+Better all together than just one at a time
+                               --Nickelback
 ```
 
 ## Overview
