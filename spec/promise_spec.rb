@@ -5,27 +5,32 @@ RSpec.describe WebFetch::Promise do
   let(:request) { { url: 'http://blah', custom: { my_key: 'my_value' } } }
   let(:options) { { uid: uid, request: request } }
   let(:client) { WebFetch::Client.new('test-host', 8080) }
-  let(:response) { described_class.new(client, options) }
   let(:retrieve_url) { "http://#{client.host}:#{client.port}/retrieve/#{uid}" }
   let(:find_url) { "http://#{client.host}:#{client.port}/find/#{uid}" }
 
   let(:client_success) do
-    double(retrieve_by_uid: { response: { success: true } })
+    double(fetch: double('success',
+      complete?: true, pending?: false, success?: true, error: nil
+    ))
   end
 
   let(:client_failure) do
-    double(retrieve_by_uid: { response: { success: false, error: 'foo' } })
+    double(fetch: double('failure',
+      complete?: true, pending?: false, success?: false, error: 'foo'
+    ))
   end
 
   let(:client_pending) do
-    double(retrieve_by_uid: { pending: true })
+    double(fetch: double('pending',
+      complete?: false, pending?: true, error: nil
+    ))
   end
 
   let(:client_not_started) do
-    double(retrieve_by_uid: nil)
+    double('not started', fetch: nil)
   end
 
-  subject { response }
+  subject(:promise) { described_class.new(client, options) }
 
   it { is_expected.to be_a described_class }
 
@@ -35,7 +40,7 @@ RSpec.describe WebFetch::Promise do
       stub_request(:get, find_url).to_return(body: {}.to_json)
     end
 
-    subject { response.fetch(fetch_options) }
+    subject { promise.fetch(fetch_options) }
 
     context 'blocking call' do
       let(:fetch_options) { { wait: true } }
@@ -48,7 +53,7 @@ RSpec.describe WebFetch::Promise do
     end
 
     context 'default (blocking)' do
-      subject { response.fetch }
+      subject { promise.fetch }
       it { is_expected.to have_requested(:get, retrieve_url) }
     end
   end
@@ -59,18 +64,18 @@ RSpec.describe WebFetch::Promise do
         .to_return(
           body: { response: { success: true, body: 'abc123' } }.to_json
         )
-      response.fetch
+      promise.fetch
     end
 
-    subject { response.result }
+    subject { promise.result }
     it { is_expected.to be_a WebFetch::Result }
     its(:body) { is_expected.to eql 'abc123' }
   end
 
   describe '#complete?, #success?, #pending?, #error' do
-    before { response.fetch }
+    before { promise.fetch }
 
-    subject { response }
+    subject { promise }
 
     context 'request succeeded' do
       let(:client) { client_success }
@@ -106,14 +111,14 @@ RSpec.describe WebFetch::Promise do
   end
 
   describe '#request' do
-    subject { response.request }
+    subject { promise.request }
     it { is_expected.to be_a WebFetch::Request }
     its(:custom) { is_expected.to eql(my_key: 'my_value') }
   end
 
   describe '#custom' do
-    # I think it's good to expose this directly on the response even though its
-    # accessible on as `response.request.custom`
+    # I think it's good to expose this directly on the promise even though it's
+    # accessible as `response.request.custom`
     its(:custom) { is_expected.to eql(my_key: 'my_value') }
   end
 end

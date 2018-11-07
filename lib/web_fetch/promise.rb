@@ -13,9 +13,8 @@ module WebFetch
     def fetch(options = {})
       return @result if complete?
 
-      block = options.fetch(:wait, true)
-      @raw_result = find_or_retrieve(block)
-      (@result = build_result)
+      wait = options.fetch(:wait, true)
+      (@result = @client.fetch(@uid, wait: wait))
     end
 
     def custom
@@ -24,55 +23,24 @@ module WebFetch
 
     def complete?
       return false if @result.nil?
-      return false if pending?
-      return true if @result
 
-      false
+      @result.complete?
     end
 
     def pending?
       return false if @result.nil?
 
-      @result == :pending
+      @result.pending?
     end
 
     def success?
-      complete? && @raw_result[:response][:success]
+      complete? && @result.success?
     end
 
     def error
       return nil unless complete?
 
-      @raw_result[:response][:error]
-    end
-
-    private
-
-    def find_or_retrieve(block)
-      block ? @client.retrieve_by_uid(@uid) : @client.find_by_uid(@uid)
-    end
-
-    def build_result
-      return nil if @raw_result.nil?
-      return :pending if @raw_result[:pending]
-      return nil unless @raw_result[:response]
-
-      response = @raw_result[:response]
-      new_result(response)
-    end
-
-    def new_result(response)
-      # XXX: Any changes to this structure need to be reflected by
-      # `Client#new_result`
-      Result.new(
-        body: response[:body],
-        headers: response[:headers],
-        status: response[:status],
-        success: @raw_result[:response][:success],
-        error: @raw_result[:response][:error],
-        uid: @uid,
-        response_time: @raw_result[:response_time]
-      )
+      @result.error
     end
   end
 end

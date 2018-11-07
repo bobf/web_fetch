@@ -18,6 +18,8 @@ module WebFetch
     end
 
     def pending?
+      return false if @pending.nil?
+
       @pending
     end
 

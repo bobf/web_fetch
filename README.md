@@ -110,7 +110,7 @@ Note that `WebFech::Promise#fetch` will block until the result is complete by de
 result = promises.first.fetch(wait: false)
 ```
 
-A special value `:pending` will be returned if the result is still processing.
+If the response has not yet returned, `result.pending?` will be `true`.
 
 Alternatively, you can call `WebFetch::Promise#complete?` to check if a request has finished before waiting for the response:
 
