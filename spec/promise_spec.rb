@@ -58,7 +58,7 @@ RSpec.describe WebFetch::Promise do
     end
   end
 
-  describe '#result' do
+  describe '#response' do
     before do
       stub_request(:get, retrieve_url)
         .to_return(
@@ -67,8 +67,8 @@ RSpec.describe WebFetch::Promise do
       promise.fetch
     end
 
-    subject { promise.result }
-    it { is_expected.to be_a WebFetch::Result }
+    subject { promise.response }
+    it { is_expected.to be_a WebFetch::Response }
     its(:body) { is_expected.to eql 'abc123' }
   end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe WebFetch::Result do
-  let(:result) do
+RSpec.describe WebFetch::Response do
+  let(:response) do
     described_class.new(
       body: 'abc123',
       headers: { 'Foo' => 'Bar' },
@@ -14,7 +14,7 @@ RSpec.describe WebFetch::Result do
     )
   end
 
-  subject { result }
+  subject { response }
 
   it { is_expected.to be_a described_class }
   its(:body) { is_expected.to eql 'abc123' }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WebFetch
-  class Result
+  class Response
     attr_reader :body, :headers, :status, :error, :uid, :response_time
 
     def initialize(options = {})

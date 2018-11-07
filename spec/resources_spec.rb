@@ -11,47 +11,47 @@ describe WebFetch::Resources do
   end
 
   describe '.gather' do
-    let(:result) do
+    let(:response) do
       described_class.gather(server, requests: [{ url: 'http://google.com' }])
     end
 
     it 'provides a `gather` resource' do
-      expect(result[:status]).to eql 200
+      expect(response[:status]).to eql 200
     end
 
     it 'responds with hash' do
-      expect(result[:payload]).to be_a Hash
+      expect(response[:payload]).to be_a Hash
     end
   end
 
   describe '.retrieve' do
     it 'gives 404 not found when unrecognised uid requested' do
-      result = described_class.retrieve(server, uid: '123')
-      expect(result[:status]).to eql 404
-      error = result[:payload][:error]
+      response = described_class.retrieve(server, uid: '123')
+      expect(response[:status]).to eql 404
+      error = response[:payload][:error]
       expect(error).to eql I18n.t(:uid_not_found)
     end
 
     it 'gives 404 not found when unrecognised hash requested' do
-      result = described_class.retrieve(server, hash: 'abc')
-      expect(result[:status]).to eql 404
-      error = result[:payload][:error]
+      response = described_class.retrieve(server, hash: 'abc')
+      expect(response[:status]).to eql 404
+      error = response[:payload][:error]
       expect(error).to eql I18n.t(:hash_not_found)
     end
   end
 
   describe '.find' do
     it 'gives 404 not found when unrecognised uid requested' do
-      result = described_class.find(server, uid: '123')
-      expect(result[:status]).to eql 404
-      error = result[:payload][:error]
+      response = described_class.find(server, uid: '123')
+      expect(response[:status]).to eql 404
+      error = response[:payload][:error]
       expect(error).to eql I18n.t(:uid_not_found)
     end
 
     it 'gives 404 not found when unrecognised hash requested' do
-      result = described_class.find(server, hash: 'abc')
-      expect(result[:status]).to eql 404
-      error = result[:payload][:error]
+      response = described_class.find(server, hash: 'abc')
+      expect(response[:status]).to eql 404
+      error = response[:payload][:error]
       expect(error).to eql I18n.t(:hash_not_found)
     end
   end

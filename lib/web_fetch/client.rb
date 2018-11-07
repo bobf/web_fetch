@@ -57,7 +57,7 @@ module WebFetch
       outcome = block ? retrieve_by_uid(uid) : find_by_uid(uid)
       no_request_error(uid) if outcome.nil?
 
-      new_result(outcome)
+      new_response(outcome)
     end
 
     def retrieve_by_uid(uid)
@@ -102,13 +102,13 @@ module WebFetch
       raise RequestNotFoundError, [I18n.t('no_request', uid: uid)]
     end
 
-    def new_result(outcome)
+    def new_response(outcome)
       response = outcome[:response] || {}
-      # FIXME: This is sort-of duplicated from `Promise#new_result` but we
+      # FIXME: This is sort-of duplicated from `Promise#new_response` but we
       # build it very slightly differently. This means we have to update in
       # both places if we change the structure. Not quite sure how to unify
       # this and ensure the same structure in both places.
-      Result.new(
+      Response.new(
         pending: outcome[:pending],
         body: response[:body],
         headers: response[:headers],

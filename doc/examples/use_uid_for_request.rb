@@ -15,11 +15,11 @@ def use_uid_for_request
   promises = client.gather([request])
   uid = promises.first.uid
   while true
-    result = client.fetch(uid, wait: false)
-    break unless result == :pending
+    response = client.fetch(uid, wait: false)
+    break unless response == :pending
   end
 
-  puts result.body[0..100]
+  puts response.body[0..100]
 
   client.stop
 end

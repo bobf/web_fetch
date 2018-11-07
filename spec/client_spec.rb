@@ -33,10 +33,10 @@ describe WebFetch::Client do
     end
 
     it 'makes `gather` requests to a running server' do
-      result = client.gather([web_request])
-      expect(result.first).to be_a WebFetch::Promise
-      expect(result.first.uid).to_not be_nil
-      expect(result.first.custom).to eql(my_key: 'my_value')
+      response = client.gather([web_request])
+      expect(response.first).to be_a WebFetch::Promise
+      expect(response.first.uid).to_not be_nil
+      expect(response.first.custom).to eql(my_key: 'my_value')
     end
 
     it 'passes any WebFetch server errors back to the user' do
@@ -62,7 +62,7 @@ describe WebFetch::Client do
 
     subject { client.fetch(responses.first.uid) }
 
-    it { is_expected.to be_a WebFetch::Result }
+    it { is_expected.to be_a WebFetch::Response }
 
     context 'no matching request found' do
       subject { proc { client.fetch('not-found') } }
@@ -75,8 +75,8 @@ describe WebFetch::Client do
 
   describe '#retrieve_by_uid' do
     it 'retrieves a gathered item' do
-      result = client.gather([{ url: 'http://blah.blah/success' }])
-      uid = result.first.uid
+      response = client.gather([{ url: 'http://blah.blah/success' }])
+      uid = response.first.uid
 
       retrieved = client.retrieve_by_uid(uid)
       expect(retrieved[:response][:status]).to eql 200
@@ -96,8 +96,8 @@ describe WebFetch::Client do
   describe '#find_by_uid' do
     it 'returns a ready status when has been fetched' do
       pending 'Find a good way to create a slow response without locking EM'
-      result = client.gather([{ url: 'http://blah.blah/slow_success' }])
-      uid = result.first[:uid]
+      response = client.gather([{ url: 'http://blah.blah/slow_success' }])
+      uid = response.first[:uid]
 
       found = client.find_by_uid(uid)
       expect(found[:pending]).to be true

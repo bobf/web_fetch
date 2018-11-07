@@ -38,11 +38,11 @@ describe WebFetch::Router do
     end
 
     it 'returns appropriate response when invaid json provided' do
-      result = router.route('/gather',
+      response = router.route('/gather',
                             method: 'POST',
                             query_string: 'json=uh oh :(',
                             server: nil)
-      expect(result).to eql(status: 400, payload: I18n.t(:bad_json))
+      expect(response).to eql(status: 400, payload: I18n.t(:bad_json))
     end
   end
 end

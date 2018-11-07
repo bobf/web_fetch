@@ -50,9 +50,9 @@ describe WebFetch::Gatherer do
 
   describe '#start' do
     it 'returns a hash containing sha1 hashes of requests' do
-      result = described_class.new(server, valid_params).start
+      response = described_class.new(server, valid_params).start
       hash = Digest::SHA1.new.digest(JSON.dump(valid_params[:requests].first))
-      expect(result[:requests].first[:hash]).to eql Digest.hexencode(hash)
+      expect(response[:requests].first[:hash]).to eql Digest.hexencode(hash)
     end
 
     it 'respects url, headers, http method and query when calculating sha1' do
@@ -67,17 +67,17 @@ describe WebFetch::Gatherer do
       req5 = { url: 'http://blah', query_string: 'a=1',
                headers: { 'Content-Type' => 'hello' },
                method: 'PUT' }
-      results = [req1, req2, req3, req4, req5].map do |req|
+      responses = [req1, req2, req3, req4, req5].map do |req|
         described_class.new(server, requests: [req], _server: server).start
       end
-      hashes = results.map { |res| res[:requests].first[:hash] }
+      hashes = responses.map { |res| res[:requests].first[:hash] }
       expect(hashes.uniq.length).to eql 5
     end
 
     it 'returns a hash containing unique IDs for requests' do
-      result = described_class.new(server, valid_params).start
-      uid1 = result[:requests][0][:uid]
-      uid2 = result[:requests][1][:uid]
+      response = described_class.new(server, valid_params).start
+      uid1 = response[:requests][0][:uid]
+      uid2 = response[:requests][1][:uid]
       expect(uid1).to_not eql uid2
     end
 
@@ -87,8 +87,8 @@ describe WebFetch::Gatherer do
         # the uid of the delegated request
         params = { requests: [url: '-', bob: 'hello'],
                    _server: server }
-        result = described_class.new(server, params).start
-        expect(result[:requests].first[:request][:bob]).to eql 'hello'
+        response = described_class.new(server, params).start
+        expect(response[:requests].first[:request][:bob]).to eql 'hello'
       end
 
       it 'does not affect request hash' do
@@ -97,12 +97,12 @@ describe WebFetch::Gatherer do
         # otherwise duplicate requests
         params1 = { requests: [url: 'http://blah', bob: 'hello'],
                     _server: server }
-        result1 = described_class.new(server, params1).start
+        response1 = described_class.new(server, params1).start
 
         params2 = { requests: [url: 'http://blah', not_bob: 'good bye'],
                     _server: server }
-        result2 = described_class.new(server, params2).start
-        expect(result1[:requests][0][:hash]).to eql result2[:requests][0][:hash]
+        response2 = described_class.new(server, params2).start
+        expect(response1[:requests][0][:hash]).to eql response2[:requests][0][:hash]
       end
     end
   end

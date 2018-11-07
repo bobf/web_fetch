@@ -65,7 +65,7 @@ end
 
 Only `url` is required. The default HTTP method is `GET`.
 
-Anything assigned to `custom` will be returned with the final result (available by calling `#custom` on the result). This may be useful if you need to tag each request with your own custom identifier, for example. Anything you assign here will have no bearing whatsoever on the HTTP request.
+Anything assigned to `custom` will be returned with the final response (available by calling `#custom` on the response). This may be useful if you need to tag each request with your own custom identifier, for example. Anything you assign here will have no bearing whatsoever on the HTTP request.
 
 If you prefer to build a request from a hash, you can call `WebFetch::Request.from_hash`
 
@@ -90,37 +90,37 @@ promises = client.gather([request])
 
 `WebFetch::Client#gather` accepts an array of `WebFetch::Request` objects and immediately returns an array of `WebFetch::Promise` objects. WebFetch will process all requests in the background concurrently.
 
-To retrieve the result of a request, call `WebFetch::Promise#fetch`
+To retrieve the response of a request, call `WebFetch::Promise#fetch`
 
 ``` ruby
-result = promises.first.fetch
+response = promises.first.fetch
 
 # Available methods:
-result.body
-result.headers
-result.status # HTTP status code
-result.success? # False if a network error (not HTTP error) occurred
-result.error # Underlying network error if applicable
-result.response_time
+response.body
+response.headers
+response.status # HTTP status code
+response.success? # False if a network error (not HTTP error) occurred
+response.error # Underlying network error if applicable
+response.response_time
 ```
 
-Note that `WebFech::Promise#fetch` will block until the result is complete by default. If you want to continue executing other code if the result is not ready (e.g. to see if any other results are ready), you can pass `wait: false`
+Note that `WebFech::Promise#fetch` will block until the response is complete by default. If you want to continue executing other code if the response is not ready (e.g. to see if any other responses are ready), you can pass `wait: false`
 
 ``` ruby
-result = promises.first.fetch(wait: false)
+response = promises.first.fetch(wait: false)
 ```
 
-If the response has not yet returned, `result.pending?` will be `true`.
+If the response has not yet returned, `response.pending?` will be `true`.
 
 Alternatively, you can call `WebFetch::Promise#complete?` to check if a request has finished before waiting for the response:
 
 ``` ruby
-result = promises.first.fetch if promises.first.complete?
+response = promises.first.fetch if promises.first.complete?
 ```
 
-### Fetching results later
+### Fetching responses later
 
-In some cases you may need to fetch the result of a request in a different context to which you initiated it. A unique ID is available for each *Promise* which can be used to fetch the result from a separate *Client* instance:
+In some cases you may need to fetch the response of a request in a different context to which you initiated it. A unique ID is available for each *Promise* which can be used to fetch the response from a separate *Client* instance:
 
 ``` ruby
 client = WebFetch::Client.new('localhost', 8077)
@@ -131,7 +131,7 @@ uid = promises.first.uid
 
 # Later ...
 client = WebFetch::Client.new('localhost', 8077)
-result = client.fetch(uid)
+response = client.fetch(uid)
 ```
 
 This can be useful if your web application initiates requests in one controller action and fetches them in another; the `uid` can be stored in a database and used to fetch the request later on.

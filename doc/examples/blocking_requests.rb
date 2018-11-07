@@ -21,9 +21,9 @@ def blocking_requests
   promises = client.gather(requests)
 
   promises.each do |promise|
-    result = promise.fetch(wait: true) # Will block (default behaviour)
-    puts result.body[0..100]
-    puts "Success: #{result.success?}"
+    response = promise.fetch(wait: true) # Will block (default behaviour)
+    puts response.body[0..100]
+    puts "Success: #{response.success?}"
   end
 
   client.stop

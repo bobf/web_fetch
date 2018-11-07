@@ -22,8 +22,8 @@ def non_blocking_requests
 
   while promises.any? { |promise| !promise.complete? }
     promises.each do |promise|
-      result = promise.fetch(wait: false) # Will not block
-      puts result.body[0..100] unless result == :pending
+      response = promise.fetch(wait: false) # Will not block
+      puts response.body[0..100] unless response == :pending
     end
   end
 

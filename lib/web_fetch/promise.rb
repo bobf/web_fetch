@@ -2,7 +2,7 @@
 
 module WebFetch
   class Promise
-    attr_reader :uid, :request, :result
+    attr_reader :uid, :request, :response
 
     def initialize(client, options = {})
       @client = client
@@ -11,10 +11,10 @@ module WebFetch
     end
 
     def fetch(options = {})
-      return @result if complete?
+      return @response if complete?
 
       wait = options.fetch(:wait, true)
-      (@result = @client.fetch(@uid, wait: wait))
+      (@response = @client.fetch(@uid, wait: wait))
     end
 
     def custom
@@ -22,25 +22,25 @@ module WebFetch
     end
 
     def complete?
-      return false if @result.nil?
+      return false if @response.nil?
 
-      @result.complete?
+      @response.complete?
     end
 
     def pending?
-      return false if @result.nil?
+      return false if @response.nil?
 
-      @result.pending?
+      @response.pending?
     end
 
     def success?
-      complete? && @result.success?
+      complete? && @response.success?
     end
 
     def error
       return nil unless complete?
 
-      @result.error
+      @response.error
     end
   end
 end
