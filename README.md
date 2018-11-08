@@ -102,6 +102,7 @@ response.status # HTTP status code
 response.success? # False if a network error (not HTTP error) occurred
 response.error # Underlying network error if applicable
 response.response_time
+response.request # The original request, provided as a `WebFetch::Request` object
 ```
 
 Note that `WebFech::Promise#fetch` will block until the response is complete by default. If you want to continue executing other code if the response is not ready (e.g. to see if any other responses are ready), you can pass `wait: false`

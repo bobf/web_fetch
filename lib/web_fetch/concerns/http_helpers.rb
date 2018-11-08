@@ -61,6 +61,7 @@ module WebFetch
         status: result.response_header.status,
         response_time: request[:response_time]
       },
+        request: request[:request],
         uid: request[:uid] }
     end
 
@@ -81,6 +82,7 @@ module WebFetch
         response_time: request[:response_time],
         error: (result.error&.inspect)
       },
+        request: request[:request],
         uid: request[:uid] }
     end
 

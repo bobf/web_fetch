@@ -36,8 +36,8 @@ RSpec.describe WebFetch::Promise do
 
   describe '#fetch' do
     before do
-      stub_request(:get, retrieve_url).to_return(body: {}.to_json)
-      stub_request(:get, find_url).to_return(body: {}.to_json)
+      stub_request(:get, retrieve_url).to_return(body: { request: {} }.to_json)
+      stub_request(:get, find_url).to_return(body: { request: {} }.to_json)
     end
 
     subject { promise.fetch(fetch_options) }
@@ -62,7 +62,9 @@ RSpec.describe WebFetch::Promise do
     before do
       stub_request(:get, retrieve_url)
         .to_return(
-          body: { response: { success: true, body: 'abc123' } }.to_json
+          body: {
+            response: { success: true, body: 'abc123' }, request: {}
+          }.to_json
         )
       promise.fetch
     end

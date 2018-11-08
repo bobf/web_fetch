@@ -2,7 +2,7 @@
 
 module WebFetch
   class Response
-    attr_reader :body, :headers, :status, :error, :uid, :response_time
+    attr_reader :request, :body, :headers, :status, :error, :uid, :response_time
 
     def initialize(options = {})
       @pending = options.fetch(:pending, false)
@@ -11,6 +11,7 @@ module WebFetch
       @body = options.fetch(:body)
       @headers = options.fetch(:headers)
       @status = options.fetch(:status)
+      @request = Request.from_hash(options.fetch(:request))
       @success = options.fetch(:success)
       @error = options.fetch(:error)
       @uid = options.fetch(:uid)

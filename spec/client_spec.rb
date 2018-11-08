@@ -37,6 +37,7 @@ describe WebFetch::Client do
       expect(response.first).to be_a WebFetch::Promise
       expect(response.first.uid).to_not be_nil
       expect(response.first.custom).to eql(my_key: 'my_value')
+      expect(response.first.request).to be_a WebFetch::Request
     end
 
     it 'passes any WebFetch server errors back to the user' do

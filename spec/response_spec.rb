@@ -9,6 +9,7 @@ RSpec.describe WebFetch::Response do
       pending: false,
       success: false,
       error: 'foo error happened',
+      request: { url: 'http://blah/' },
       uid: 'uid123',
       response_time: 123.45
     )
@@ -26,4 +27,10 @@ RSpec.describe WebFetch::Response do
   its(:error) { is_expected.to eql 'foo error happened' }
   its(:uid) { is_expected.to eql 'uid123' }
   its(:response_time) { is_expected.to eql 123.45 }
+  its(:request) { is_expected.to be_a WebFetch::Request }
+
+  describe '#request' do
+    subject { response.request }
+    its(:url) { is_expected.to eql 'http://blah/' }
+  end
 end

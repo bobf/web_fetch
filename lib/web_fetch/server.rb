@@ -32,6 +32,7 @@ module WebFetch
         http = request_async(target)
         request = { uid: target[:uid],
                     start_time: target[:start_time],
+                    request: target[:request],
                     deferred: http }
         apply_callbacks(request)
         @storage.store(target[:uid], request)
