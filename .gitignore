@@ -17,3 +17,5 @@
 bin/*.pid
 web_fetch-*.gem
 Gemfile.lock
+
+docker/.build
