@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description   = 'Fetches HTTP responses as batch requests concurrently'
   s.authors       = ['Bob Farrell']
   s.email         = 'robertanthonyfarrell@gmail.com'
-  s.files         = `git ls-files`.split($RS)
+  s.files         = File.read(File.join(__dir__, 'manifest')).split
   s.homepage      = 'https://github.com/bobf/web_fetch'
   s.licenses      = ['MIT']
   s.require_paths = ['lib']
