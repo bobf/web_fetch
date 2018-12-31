@@ -34,7 +34,7 @@ module WebFetch
     def gather(requests); end
 
     def storage
-      Storage
+      Storage::Memory.new
     end
   end
 end

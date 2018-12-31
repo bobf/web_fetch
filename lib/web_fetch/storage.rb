@@ -1,21 +1,22 @@
 # frozen_string_literal: true
-
 module WebFetch
-  # Rudimentary global storage for responses. The intention is that this will
-  # one day prescribe an interface to e.g. memcached
-  class Storage
-    @storage = {}
+  module Storage
+    class << self
+      def create
+        {
+          'memory' => Memory,
+          'memcached' => Memcached
+        }.fetch(backend).new
+      end
 
-    def self.store(key, obj)
-      @storage[key] = obj
-    end
+      private
 
-    def self.fetch(key)
-      @storage.fetch(key, nil)
-    end
-
-    def self.delete(key)
-      @storage.delete(key)
+      def backend
+        ENV.fetch('WEB_FETCH_BACK_END', 'memory')
+      end
     end
   end
 end
+
+require 'web_fetch/storage/memcached'
+require 'web_fetch/storage/memory'

@@ -198,8 +198,6 @@ web_fetch_control run -- --port 8000 --host 0.0.0.0
 
 No pid file will be created unless the `--pidfile` parameter is passed. It is recommended to use a process monitoring tool (e.g. `monit` or `systemd`) to monitor the WebFetch process.
 
-When running as a daemon, WebFetch will log to the null device so it is advised to always pass `--log` in this case.
-
 ## Docker
 
 To use WebFetch in Docker you can either use the provided [`Dockerfile`](docker/Dockerfile) or the public image [`web_fetch/web_fetch`](https://hub.docker.com/r/webfetch/webfetch/)

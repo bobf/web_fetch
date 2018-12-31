@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activesupport', '>= 4.0'
   s.add_dependency 'daemons', '~> 1.2'
+  s.add_dependency 'dalli'
   s.add_dependency 'em-http-request', '~> 1.1'
   s.add_dependency 'em-logger', '~> 0.1'
   s.add_dependency 'eventmachine', '~> 1.0'
@@ -37,7 +38,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake', '~> 12.3'
   s.add_development_dependency 'rspec', '~> 3.5'
   s.add_development_dependency 'rspec-its', '~> 1.2'
-  s.add_development_dependency 'rubocop', '~> 0.59.2'
+  s.add_development_dependency 'rubocop', '~> 0.60.0'
+  s.add_development_dependency 'strong_versions'
   s.add_development_dependency 'webmock', '~> 3.4'
 end
 # rubocop:enable Metrics/BlockLength

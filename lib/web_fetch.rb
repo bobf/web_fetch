@@ -24,6 +24,9 @@ unless Gem.loaded_specs.key?('rails')
   I18n.config.available_locales = :en
 end
 
+module WebFetch
+end
+
 require 'web_fetch/logger'
 require 'web_fetch/helpers'
 require 'web_fetch/concerns/event_machine_helpers'

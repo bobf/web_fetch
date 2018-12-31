@@ -17,8 +17,7 @@ module WebFetch
       private
 
       def log_file(path)
-        return STDOUT if STDOUT.isatty && path.nil?
-        return File.open(File::NULL, 'w') if path.nil?
+        return STDOUT if path.nil?
 
         log = File.open(path, 'a')
         log.sync = true # Prevent buffering

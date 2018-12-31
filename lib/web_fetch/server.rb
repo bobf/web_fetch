@@ -13,7 +13,7 @@ module WebFetch
     def post_init
       super
       @router = Router.new
-      @storage = Storage
+      @storage = WebFetch::Storage.create
       no_environment_strings
     end
 
