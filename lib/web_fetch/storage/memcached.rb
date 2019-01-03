@@ -29,8 +29,12 @@ module WebFetch
           require 'dalli'
           host = @config.fetch(:host)
           port = @config.fetch(:port)
-          Dalli::Client.new("#{host}:#{port}")
+          Dalli::Client.new("#{host}:#{port}", expires_in: ttl.seconds)
         end
+      end
+
+      def ttl
+        ENV.fetch('WEB_FETCH_MEMCACHED_TTL', '60').to_i
       end
     end
   end

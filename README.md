@@ -33,10 +33,24 @@ Require WebFetch in your application:
 require 'web_fetch'
 ```
 
+### Memcached
+
+It is highly recommended to use _Memcached_ as a back end to _WebFetch_ in production.
+
+The following environment variables can be used to select and configure the back end:
+
+```bash
+WEB_FETCH_BACK_END=memcached
+WEB_FETCH_MEMCACHED_HOST=localhost
+WEB_FETCH_MEMCACHED_PORT=11211
+WEB_FETCH_MEMCACHED_TTL=60
+```
+
+Note that _WebFetch_ is intended to function as a fast proxy server so a low TTL (default 60 seconds) is recommended. With a _Memcached_ back end multiple instances of _WebFetch_ can operate on the same memory store. This provides good options for containerisation, scaling, and high availability.
+
 ### Launch or connect to a server
 
-Launch the server from your application (recommended for familiarising yourself
-with WebFetch):
+Launch the server from your application (recommended for familiarising yourself with WebFetch):
 
 ``` ruby
 client = WebFetch::Client.create('localhost', 8077)
@@ -105,7 +119,7 @@ response.response_time
 response.request # The original request, provided as a `WebFetch::Request` object
 ```
 
-Note that `WebFech::Promise#fetch` will block until the response is complete by default. If you want to continue executing other code if the response is not ready (e.g. to see if any other responses are ready), you can pass `wait: false`
+Note that `WebFetch::Promise#fetch` will block until the response is complete by default. If you want to continue executing other code if the response is not ready (e.g. to see if any other responses are ready), you can pass `wait: false`
 
 ``` ruby
 response = promises.first.fetch(wait: false)
