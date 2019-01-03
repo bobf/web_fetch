@@ -1,4 +1,4 @@
-FROM library/ruby
+FROM library/ruby:2.5.3
 ADD .build/web_fetch.tar.gz .
 WORKDIR web_fetch
 RUN bundle && bundle exec rake install
