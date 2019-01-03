@@ -1,0 +1,6 @@
+on_failure: warn
+ignore:
+  - rails
+  - rack
+  - i18n
+  - activesupport

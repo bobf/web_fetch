@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require 'web_fetch'
-require 'pp'
+require 'betterp'
 require 'byebug'
-require 'webmock/rspec'
+require 'pp'
 require 'rspec/its'
+require 'web_fetch'
+require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
@@ -33,8 +34,12 @@ module WebFetch
   class MockServer
     def gather(requests); end
 
+    def self.storage
+      @storage ||= Storage::Memory.new
+    end
+
     def storage
-      Storage::Memory.new
+      self.class.storage
     end
   end
 end
@@ -44,13 +49,14 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  config.before(:each) { WebFetch::MockServer.storage.clear }
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  config.order = :random
-
-  Kernel.srand config.seed
+  # config.order = :random
+  #
+  # Kernel.srand config.seed
 end

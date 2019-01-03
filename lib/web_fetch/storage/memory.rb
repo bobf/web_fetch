@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module WebFetch
   module Storage
     class Memory
@@ -6,6 +7,10 @@ module WebFetch
 
       class << self
         attr_reader :storage
+      end
+
+      def clear
+        self.class.storage.clear
       end
 
       def store(key, obj)

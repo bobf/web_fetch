@@ -2,19 +2,16 @@
 
 module WebFetch
   class Request
-    attr_writer :url, :query, :headers, :body, :custom
+    attr_writer :url, :query, :headers, :body, :custom, :method
     attr_reader :url, :query, :headers, :body, :custom
 
     def initialize
+      @method = 'GET'
       yield self
     end
 
-    def method=(val)
-      @method = val.downcase.to_sym
-    end
-
     def method
-      @method ||= :get
+      @method.downcase.to_sym
     end
 
     def to_h
@@ -47,18 +44,13 @@ module WebFetch
     end
 
     class << self
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       def build_request(hash)
         Request.new do |request|
-          request.url = hash.delete(:url) if hash.key?(:url)
-          request.query = hash.delete(:query) if hash.key?(:query)
-          request.headers = hash.delete(:headers) if hash.key?(:headers)
-          request.body = hash.delete(:body) if hash.key?(:body)
-          request.method = hash.delete(:method) if hash.key?(:method)
-          request.custom = hash.delete(:custom) if hash.key?(:custom)
+          %i[url query headers body method custom].each do |key|
+            request.send("#{key}=", hash.delete(key))
+          end
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
     end
   end
 end

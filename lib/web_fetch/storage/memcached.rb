@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebFetch
   module Storage
     class Memcached
@@ -9,11 +11,11 @@ module WebFetch
       end
 
       def store(key, obj)
-        storage.set(key, obj)
+        storage.set(key, obj.to_json)
       end
 
       def fetch(key)
-        storage.get(key)
+        JSON.parse(storage.get(key), symbolize_names: true)
       end
 
       def delete(key)

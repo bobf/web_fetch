@@ -102,7 +102,8 @@ describe WebFetch::Gatherer do
         params2 = { requests: [url: 'http://blah', not_bob: 'good bye'],
                     _server: server }
         response2 = described_class.new(server, params2).start
-        expect(response1[:requests][0][:hash]).to eql response2[:requests][0][:hash]
+        expect(response1[:requests][0][:hash])
+          .to eql response2[:requests][0][:hash]
       end
     end
   end

@@ -9,21 +9,28 @@ RSpec.describe WebFetch::Promise do
   let(:find_url) { "http://#{client.host}:#{client.port}/find/#{uid}" }
 
   let(:client_success) do
-    double(fetch: double('success',
-      complete?: true, pending?: false, success?: true, error: nil
-    ))
+    double(
+      fetch: double('success',
+                    complete?: true,
+                    pending?: false,
+                    success?: true,
+                    error: nil)
+    )
   end
 
   let(:client_failure) do
-    double(fetch: double('failure',
-      complete?: true, pending?: false, success?: false, error: 'foo'
-    ))
+    double(
+      fetch: double('failure',
+                    complete?: true,
+                    pending?: false,
+                    success?: false,
+                    error: 'foo')
+    )
   end
 
   let(:client_pending) do
     double(fetch: double('pending',
-      complete?: false, pending?: true, error: nil
-    ))
+                         complete?: false, pending?: true, error: nil))
   end
 
   let(:client_not_started) do
@@ -36,8 +43,26 @@ RSpec.describe WebFetch::Promise do
 
   describe '#fetch' do
     before do
-      stub_request(:get, retrieve_url).to_return(body: { request: {} }.to_json)
-      stub_request(:get, find_url).to_return(body: { request: {} }.to_json)
+      stub_request(:get, retrieve_url)
+        .to_return(
+          body: {
+            uid: 123,
+            request: {},
+            response: {
+              success: true, status: 200, body: 'abc123', headers: {}
+            }
+          }.to_json
+        )
+
+      stub_request(:get, find_url).to_return(
+        body: {
+          uid: 123,
+          request: {},
+          response: {
+            success: true, status: 200, body: 'abc123', headers: {}
+          }
+        }.to_json
+      )
     end
 
     subject { promise.fetch(fetch_options) }
@@ -63,7 +88,11 @@ RSpec.describe WebFetch::Promise do
       stub_request(:get, retrieve_url)
         .to_return(
           body: {
-            response: { success: true, body: 'abc123' }, request: {}
+            uid: 123,
+            request: {},
+            response: {
+              success: true, status: 200, body: 'abc123', headers: {}
+            }
           }.to_json
         )
       promise.fetch

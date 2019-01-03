@@ -53,16 +53,11 @@ module WebFetch
     end
 
     def success(request)
-      result = request[:deferred]
-      { response: {
-        success: true,
-        body: result.response,
-        headers: result.headers,
-        status: result.response_header.status,
-        response_time: request[:response_time]
-      },
+      {
+        response: response(request, true),
         request: request[:request],
-        uid: request[:uid] }
+        uid: request[:uid]
+      }
     end
 
     def fail_(request, response)
@@ -73,22 +68,29 @@ module WebFetch
     end
 
     def failure(request)
-      result = request[:deferred]
-      { response: {
-        success: false,
-        body: result.response,
-        headers: result.headers,
-        status: result.response_header.status,
-        response_time: request[:response_time],
-        error: (result.error&.inspect)
-      },
+      {
+        response: response(request, false),
         request: request[:request],
-        uid: request[:uid] }
+        uid: request[:uid]
+      }
     end
 
     def accept_gzip?
       # em-http-request doesn't do us any favours with parsing the HTTP headers
       @http_headers.downcase.include?('accept-encoding: gzip')
+    end
+
+    private
+
+    def response(request, success)
+      result = request[:deferred]
+      {
+        success: success,
+        body: result.response,
+        headers: result.headers,
+        status: result.response_header.status,
+        response_time: request[:response_time]
+      }.merge(success ? {} : { error: (result.error&.inspect) })
     end
   end
 end

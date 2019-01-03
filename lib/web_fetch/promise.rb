@@ -6,15 +6,15 @@ module WebFetch
 
     def initialize(client, options = {})
       @client = client
-      @uid = options[:uid]
-      @request = Request.from_hash(options[:request])
+      @uid = options.fetch(:uid)
+      @request = Request.from_hash(options.fetch(:request))
     end
 
     def fetch(options = {})
       return @response if complete?
 
       wait = options.fetch(:wait, true)
-      (@response = @client.fetch(@uid, wait: wait))
+      @response = @client.fetch(@uid, wait: wait)
     end
 
     def custom
