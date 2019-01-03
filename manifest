@@ -2,6 +2,7 @@
 .rspec
 .rubocop.yml
 .ruby-version
+.strong_versions.yml
 Gemfile
 LICENSE
 Makefile
@@ -10,6 +11,7 @@ Rakefile
 TODO
 bin/rspec
 bin/rubocop
+bin/strong_versions
 bin/web_fetch_control
 bin/web_fetch_server
 config/locales/en.yml
@@ -36,6 +38,8 @@ lib/web_fetch/retriever.rb
 lib/web_fetch/router.rb
 lib/web_fetch/server.rb
 lib/web_fetch/storage.rb
+lib/web_fetch/storage/memcached.rb
+lib/web_fetch/storage/memory.rb
 lib/web_fetch/version.rb
 manifest
 spec/client_spec.rb
@@ -52,6 +56,6 @@ spec/retriever_spec.rb
 spec/router_spec.rb
 spec/server_spec.rb
 spec/spec_helper.rb
-spec/storage_spec.rb
+spec/storage/memory_spec.rb
 swagger.yaml
 web_fetch.gemspec
