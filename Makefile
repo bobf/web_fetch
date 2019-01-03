@@ -12,4 +12,4 @@ docker: version := $(shell bundle exec ruby -e "require 'web_fetch'; puts WebFet
 docker:
 	mkdir -p docker/.build
 	git archive --format tar.gz -o docker/.build/web_fetch.tar.gz master
-	docker build --no-cache -t webfetch/webfetch:${version} docker
+	docker build -t webfetch/webfetch:${version} docker
