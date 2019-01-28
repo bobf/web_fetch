@@ -29,7 +29,7 @@ module WebFetch
           require 'dalli'
           host = @config.fetch(:host)
           port = @config.fetch(:port)
-          Dalli::Client.new("#{host}:#{port}", expires_in: ttl.seconds)
+          Dalli::Client.new("#{host}:#{port}", expires_in: ttl)
         end
       end
 
