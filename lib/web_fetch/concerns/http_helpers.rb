@@ -9,10 +9,10 @@ module WebFetch
       response.send_response
     end
 
-    def pending(result, response)
+    def pending(uid, response)
       respond_immediately({
                             payload: {
-                              uid: result[:request][:uid],
+                              uid: uid,
                               pending: true,
                               message: I18n.t(:pending)
                             }
@@ -45,52 +45,23 @@ module WebFetch
       JSON.parse(@http_post_content, symbolize_names: true)
     end
 
-    def succeed(request, response)
+    def succeed(resource, response)
       response.status = 200
-      response.content = compress(JSON.dump(success(request)))
+      response.content = compress(JSON.dump(resource))
+      storage.delete(resource[:request][:uid])
       response.send_response
-      storage.delete(request[:uid])
     end
 
-    def success(request)
-      {
-        response: response(request, true),
-        request: request[:request],
-        uid: request[:uid]
-      }
-    end
-
-    def fail_(request, response)
+    def fail_(resource, response)
       response.status = 200
-      response.content = compress(JSON.dump(failure(request)))
+      response.content = compress(JSON.dump(resource))
+      storage.delete(resource[:request][:uid])
       response.send_response
-      storage.delete(request[:uid])
-    end
-
-    def failure(request)
-      {
-        response: response(request, false),
-        request: request[:request],
-        uid: request[:uid]
-      }
     end
 
     def accept_gzip?
       # em-http-request doesn't do us any favours with parsing the HTTP headers
       @http_headers.downcase.include?('accept-encoding: gzip')
-    end
-
-    private
-
-    def response(request, success)
-      result = request[:deferred]
-      {
-        success: success,
-        body: result.response,
-        headers: result.headers,
-        status: result.response_header.status,
-        response_time: request[:response_time]
-      }.merge(success ? {} : { error: (result.error&.inspect) })
     end
   end
 end

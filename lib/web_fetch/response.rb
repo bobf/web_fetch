@@ -4,18 +4,19 @@ module WebFetch
   class Response
     attr_reader :request, :body, :headers, :status, :error, :uid, :response_time
 
-    def initialize(outcome)
-      @pending = outcome.fetch(:pending, false)
+    def initialize(response)
+      @pending = response.fetch(:pending, false)
       return if pending?
 
+      outcome = response.fetch(:request)
       @uid = outcome.fetch(:uid)
       @response_time = outcome.fetch(:response_time, nil)
-      @request = Request.from_hash(outcome.fetch(:request))
+      @request = Request.from_hash(outcome.fetch(:request), validate: false)
       initialize_response(outcome.fetch(:response))
     end
 
     def initialize_response(response)
-      @body = response.fetch(:body)
+      @body = Base64.decode64(response.fetch(:body))
       @headers = response.fetch(:headers)
       @status = response.fetch(:status)
       @success = response.fetch(:success)

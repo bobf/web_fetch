@@ -65,13 +65,10 @@ describe WebFetch::Client do
 
     it { is_expected.to be_a WebFetch::Response }
 
-    context 'no matching request found' do
-      subject { proc { client.fetch('not-found') } }
-      it { is_expected.to raise_error WebFetch::RequestNotFoundError }
+    context 'pending' do
+      subject { client.fetch('not-ready-yet') }
+      it { is_expected.to be_pending }
     end
-
-    # Tested more extensively in supporting methods #retrieve_by_uid and
-    # #find_by_uid below
   end
 
   describe '#retrieve_by_uid' do

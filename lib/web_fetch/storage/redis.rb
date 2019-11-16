@@ -2,11 +2,11 @@
 
 module WebFetch
   module Storage
-    class Memcached
+    class Redis
       def initialize
         @config = {
-          host: ENV.fetch('WEB_FETCH_MEMCACHED_HOST', 'localhost'),
-          port: ENV.fetch('WEB_FETCH_MEMCACHED_PORT', '11211')
+          host: ENV.fetch('WEB_FETCH_REDIS_HOST', 'localhost'),
+          port: ENV.fetch('WEB_FETCH_REDIS_PORT', '6379')
         }
       end
 
@@ -15,10 +15,7 @@ module WebFetch
       end
 
       def fetch(key)
-        result = storage.get(key)
-        return JSON.parse(result, symbolize_names: true) unless result.nil?
-
-        nil
+        JSON.parse(storage.get(key), symbolize_names: true)
       end
 
       def delete(key)

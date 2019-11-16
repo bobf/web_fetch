@@ -46,20 +46,24 @@ RSpec.describe WebFetch::Promise do
       stub_request(:get, retrieve_url)
         .to_return(
           body: {
-            uid: 123,
-            request: {},
-            response: {
-              success: true, status: 200, body: 'abc123', headers: {}
+            request: {
+              uid: 123,
+              request: {},
+              response: {
+                success: true, status: 200, body: 'abc123', headers: {}
+              }
             }
           }.to_json
         )
 
       stub_request(:get, find_url).to_return(
         body: {
-          uid: 123,
-          request: {},
-          response: {
-            success: true, status: 200, body: 'abc123', headers: {}
+          request: {
+            uid: 123,
+            request: {},
+            response: {
+              success: true, status: 200, body: 'abc123', headers: {}
+            }
           }
         }.to_json
       )
@@ -88,10 +92,15 @@ RSpec.describe WebFetch::Promise do
       stub_request(:get, retrieve_url)
         .to_return(
           body: {
-            uid: 123,
-            request: {},
-            response: {
-              success: true, status: 200, body: 'abc123', headers: {}
+            request: {
+              uid: 123,
+              request: {},
+              response: {
+                success: true,
+                status: 200,
+                body: Base64.encode64('abc123'),
+                headers: {}
+              }
             }
           }.to_json
         )
