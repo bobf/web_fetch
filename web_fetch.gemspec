@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'hanami-utils', '~> 1.0'
   s.add_dependency 'i18n', '>= 0.7'
   s.add_dependency 'rack', '>= 1.6'
+  s.add_dependency 'redis', '~> 4.1'
   s.add_dependency 'subprocess', '~> 1.3'
 
   s.add_development_dependency 'betterp', '~> 0.1.2'

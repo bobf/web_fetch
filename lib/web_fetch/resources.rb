@@ -6,23 +6,27 @@ module WebFetch
   class Resources
     class << self
       def root(_server, _params)
-        { status: status(:ok), payload: { application: 'WebFetch' } }
+        {
+          status: status(:ok),
+          command: 'root',
+          payload: { application: 'WebFetch' }
+        }
       end
 
       def gather(server, params)
-        gatherer = Gatherer.new(server, params)
+        gatherer = Gatherer.new(server.storage, params)
         if gatherer.valid?
-          { status: status(:ok), payload: gatherer.start }
+          { status: status(:ok), payload: gatherer.start, command: 'gather' }
         else
           { status: status(:unprocessable),
-            payload: { error: gatherer.errors } }
+            payload: { error: gatherer.errors }, command: 'gather' }
         end
       end
 
       def retrieve(server, params, options = {})
-        retriever = Retriever.new(server, params, options)
+        retriever = Retriever.new(server.storage, params, options)
         unless retriever.valid?
-          return { status: status(:unprocessable),
+          return { status: status(:unprocessable), command: 'retrieve',
                    payload: { error: retriever.errors } }
         end
         defer_if_found(retriever)
@@ -37,26 +41,12 @@ module WebFetch
       def status(name)
         {
           ok: 200,
-          unprocessable: 422,
-          not_found: 404
+          unprocessable: 422
         }.fetch(name)
       end
 
-      def not_found(retriever)
-        {
-          status: status(:not_found),
-          payload: { error: retriever.not_found_error }
-        }
-      end
-
       def defer_if_found(retriever)
-        found = retriever.find
-        if found.nil?
-          { status: status(:not_found),
-            payload: { error: retriever.not_found_error } }
-        else
-          { request: found }
-        end
+        { command: 'retrieve', request: retriever.find }
       end
     end
   end

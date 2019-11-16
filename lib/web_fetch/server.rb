@@ -8,52 +8,39 @@ module WebFetch
 
     include EM::HttpServer
     include HTTPHelpers
-    include EventMachineHelpers
 
     def post_init
       super
       @router = Router.new
       @storage = WebFetch::Storage.create
+
       no_environment_strings
     end
 
     def process_http_request
-      result = @router.route(@http_request_uri, request_params)
+      resource = @router.route(@http_request_uri, request_params)
       response = EM::DelegatedHttpResponse.new(self)
       default_headers(response)
-      outcome(result, response)
-    end
 
-    # Note that #gather is called by WebFetch itself to asynchronously gather
-    # the required HTTP objects. All public API requests go via
-    # #process_http_request and subsequently WebFetch::Router#route
-    def gather(targets)
-      targets.each do |target|
-        http = request_async(target)
-        request = { uid: target[:uid],
-                    start_time: target[:start_time],
-                    request: target[:request],
-                    deferred: http }
-        apply_callbacks(request)
-        @storage.store(target[:uid], request)
-      end
+      outcome(resource, response)
     end
 
     private
 
-    def outcome(result, response)
-      # User requested an unrecognised ID
-      return respond_immediately(result, response) if result[:request].nil?
+    def immediate?(command)
+      %w[gather root].include?(command)
+    end
 
-      # Fetch has already completed
-      return succeed(result, response) if result[:succeeded]
-      return fail_(result, response) if result[:failed]
+    def outcome(resource, response)
+      command = resource[:command]
+      Logger.debug(command)
+      return respond_immediately(resource, response) if immediate?(command)
+      return pending(resource, response) if resource[:request][:pending]
 
-      # User requested non-blocking call
-      return pending(result, response) if result[:request][:pending]
+      succeeded = resource[:request][:response][:success]
+      return succeed(resource, response) if succeeded
 
-      # User requested blocking call
-      wait_for_response(result[:request], response)
+      fail_(resource, response)
     end
   end
 end

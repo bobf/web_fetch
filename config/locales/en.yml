@@ -8,9 +8,6 @@ en:
   hash_or_uid_but_not_both: "Cannot retrieve by both `uid` and `hash`"
   missing_hash_and_uid: "Must pass either `uid` or `hash` to retrieve"
 
-  uid_not_found: "Provided `uid` has not yet been requested"
-  hash_not_found: "Provided `hash` has not yet been requested"
-
   pending: "Your request is still being processed"
 
   no_request: "No active request found for UID: %{uid}"

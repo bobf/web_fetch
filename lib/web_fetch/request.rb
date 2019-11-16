@@ -35,9 +35,10 @@ module WebFetch
       eql?(other)
     end
 
-    def self.from_hash(hash)
+    def self.from_hash(hash, options = {})
       hash_copy = hash.dup
       request = build_request(hash_copy)
+      return request unless options.fetch(:validate, true)
       raise ArgumentError, "Unrecognized keys: #{hash}" unless hash_copy.empty?
 
       request
