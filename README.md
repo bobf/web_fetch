@@ -18,7 +18,7 @@ This permits issuing multiple HTTP requests in parallel, in a fully encapsulated
 In your `Gemfile`, add:
 
 ``` ruby
-gem 'web_fetch'
+gem 'web_fetch', '~> 0.5.0'
 ```
 
 and update your bundle:
