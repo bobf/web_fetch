@@ -8,18 +8,58 @@ module WebFetch
 
     HASHABLE_KEYS = %i[url query_string headers method].freeze
 
-    def initialize(server, params)
+    def initialize(storage, params, logger = Logger, http = EM::HttpRequest)
       @requests = params[:requests]
-      @server = server
+      @storage = storage
+      @logger = logger
+      @http = http
     end
 
     def start
       tagged = { requests: tag_requests }
-      @server.gather(tagged[:requests])
+      gather(tagged[:requests])
       tagged
     end
 
     private
+
+    def gather(targets)
+      targets.each do |target|
+        uid = target[:uid]
+        @logger.debug("Initialising async for uid: #{uid}")
+        deferred = request_async(target)
+        request = { uid: uid, start_time: target[:start_time],
+                    request: target[:request] }
+        apply_callbacks(request, deferred)
+      end
+    end
+
+    def apply_callbacks(request, deferred)
+      uid = request[:uid]
+      deferred.callback do
+        @logger.debug("HTTP fetch successful for uid: #{uid}")
+        @storage.store(uid, response(request, deferred, success: true))
+      end
+
+      deferred.errback do
+        @logger.debug("HTTP fetch failure for uid: #{uid}")
+        @storage.store(uid, response(request, deferred, success: false))
+      end
+
+      @logger.debug("HTTP fetch started for uid: #{uid}")
+    end
+
+    def request_async(target)
+      request = target[:request]
+      target[:start_time] = Time.now.utc
+      async_request = @http.new(request[:url])
+      method = request.fetch(:method, 'GET').downcase.to_sym
+      async_request.public_send(
+        method, head: request[:headers],
+                query: request.fetch(:query, {}),
+                body: request.fetch(:body, nil)
+      )
+    end
 
     def validate
       error(:requests_missing) if requests_missing?
@@ -57,6 +97,28 @@ module WebFetch
 
     def uid
       SecureRandom.uuid
+    end
+
+    def response_time(request)
+      Time.now.utc - request[:start_time]
+    end
+
+    def response(request, result, options = {})
+      {
+        response: result(request, result, options.fetch(:success)),
+        request: request,
+        uid: request[:uid]
+      }
+    end
+
+    def result(request, result, success)
+      {
+        success: success,
+        body: Base64.encode64(result.response),
+        headers: result.headers,
+        status: result.response_header.status,
+        response_time: response_time(request)
+      }.merge(success ? {} : { error: (result.error&.inspect) })
     end
   end
 end

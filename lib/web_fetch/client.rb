@@ -48,30 +48,25 @@ module WebFetch
       handle_error(JSON.parse(response.body)['error']) unless response.success?
 
       requests = JSON.parse(response.body, symbolize_names: true)[:requests]
+
       promises(requests)
     end
 
     def fetch(uid, options = {})
       block = options.fetch(:wait, true)
 
-      outcome = block ? retrieve_by_uid(uid) : find_by_uid(uid)
+      outcome = block ? fetch_blocking(uid) : fetch_nonblocking(uid)
       no_request_error(uid) if outcome.nil?
 
       Response.new(outcome.merge(uid: uid))
     end
 
     def retrieve_by_uid(uid)
-      response = get("retrieve/#{uid}")
-      return nil unless response.success?
-
-      JSON.parse(response.body, symbolize_names: true)
+      fetch_blocking(uid)[:request]
     end
 
     def find_by_uid(uid)
-      response = get("find/#{uid}")
-      return nil unless response.success?
-
-      JSON.parse(response.body, symbolize_names: true)
+      fetch_nonblocking(uid)[:request]
     end
 
     class << self
@@ -93,6 +88,29 @@ module WebFetch
     end
 
     private
+
+    def decode_response(response)
+      return response unless response[:command] == 'retrieve'
+
+      response[:request][:response][:body] = Base64.decode64(
+        response[:request][:response][:body]
+      )
+      response
+    end
+
+    def fetch_blocking(uid)
+      response = get("retrieve/#{uid}")
+      return nil unless response.success?
+
+      decode_response(JSON.parse(response.body, symbolize_names: true))
+    end
+
+    def fetch_nonblocking(uid)
+      response = get("find/#{uid}")
+      return nil unless response.success?
+
+      decode_response(JSON.parse(response.body, symbolize_names: true))
+    end
 
     def handle_error(error)
       raise WebFetch::ClientError, error

@@ -10,7 +10,9 @@ describe WebFetch::Router do
   describe '#route' do
     it 'provides a route to GET /' do
       expect(router.route('/'))
-        .to eql(status: 200, payload: { application: 'WebFetch' })
+        .to eql(
+          status: 200, command: 'root', payload: { application: 'WebFetch' }
+        )
     end
 
     it 'provides a route to POST /gather' do

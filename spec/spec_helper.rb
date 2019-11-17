@@ -7,6 +7,8 @@ require 'rspec/its'
 require 'web_fetch'
 require 'webmock/rspec'
 
+require File.join(__dir__, 'storage', 'shared_examples')
+
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # This is pretty ugly but seems to do the job

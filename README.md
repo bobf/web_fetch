@@ -35,15 +35,22 @@ require 'web_fetch'
 
 ### Memcached
 
-It is highly recommended to use _Memcached_ as a back end to _WebFetch_ in production.
+It is highly recommended to use _Memcached_ or _Redis_ as a back end to _WebFetch_ in production.
 
 The following environment variables can be used to select and configure the back end:
 
 ```bash
+# Memcached
 WEB_FETCH_BACK_END=memcached
 WEB_FETCH_MEMCACHED_HOST=localhost
 WEB_FETCH_MEMCACHED_PORT=11211
 WEB_FETCH_MEMCACHED_TTL=60
+
+# Redis
+WEB_FETCH_BACK_END=redis
+WEB_FETCH_REDIS_HOST=localhost
+WEB_FETCH_REDIS_PORT=6379
+WEB_FETCH_REDIS_TTL=60
 ```
 
 Note that _WebFetch_ is intended to function as a fast proxy server so a low TTL (default 60 seconds) is recommended. With a _Memcached_ back end multiple instances of _WebFetch_ can operate on the same memory store. This provides good options for containerisation, scaling, and high availability.

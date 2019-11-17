@@ -6,7 +6,8 @@ module WebFetch
       def create
         {
           'memory' => Memory,
-          'memcached' => Memcached
+          'memcached' => Memcached,
+          'redis' => Redis
         }.fetch(backend).new
       end
 
@@ -21,3 +22,4 @@ end
 
 require 'web_fetch/storage/memcached'
 require 'web_fetch/storage/memory'
+require 'web_fetch/storage/redis'

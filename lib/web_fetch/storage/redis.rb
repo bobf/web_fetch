@@ -2,18 +2,18 @@
 
 module WebFetch
   module Storage
-    class Memcached
+    class Redis
       def initialize(client = nil)
-        require 'dalli' if client.nil?
-        @client = client || Dalli::Client
+        require 'redis' if client.nil?
+        @client = client || ::Redis
         @config = {
-          host: ENV.fetch('WEB_FETCH_MEMCACHED_HOST', 'localhost'),
-          port: ENV.fetch('WEB_FETCH_MEMCACHED_PORT', '11211')
+          host: ENV.fetch('WEB_FETCH_REDIS_HOST', 'localhost'),
+          port: ENV.fetch('WEB_FETCH_REDIS_PORT', '6379')
         }
       end
 
       def store(key, obj)
-        storage.set(key, obj.to_json)
+        storage.set(key, obj.to_json, ex: ttl)
       end
 
       def fetch(key)
@@ -24,7 +24,7 @@ module WebFetch
       end
 
       def delete(key)
-        storage.delete(key)
+        storage.del(key)
       end
 
       private
@@ -33,12 +33,12 @@ module WebFetch
         @storage ||= begin
           host = @config.fetch(:host)
           port = @config.fetch(:port)
-          @client.new("#{host}:#{port}", expires_in: ttl)
+          @client.new(url: "redis://#{host}:#{port}")
         end
       end
 
       def ttl
-        @ttl ||= ENV.fetch('WEB_FETCH_MEMCACHED_TTL', '60').to_i
+        @ttl ||= ENV.fetch('WEB_FETCH_REDIS_TTL', '60').to_i
       end
     end
   end
