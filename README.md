@@ -33,7 +33,7 @@ Require WebFetch in your application:
 require 'web_fetch'
 ```
 
-### Memcached
+### Production Storage Back Ends
 
 It is highly recommended to use _Memcached_ or _Redis_ as a back end to _WebFetch_ in production.
 
