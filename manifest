@@ -23,7 +23,6 @@ docker/Dockerfile
 lib/web_fetch.rb
 lib/web_fetch/client.rb
 lib/web_fetch/concerns/client_http.rb
-lib/web_fetch/concerns/event_machine_helpers.rb
 lib/web_fetch/concerns/http_helpers.rb
 lib/web_fetch/concerns/validatable.rb
 lib/web_fetch/errors.rb
@@ -40,6 +39,7 @@ lib/web_fetch/server.rb
 lib/web_fetch/storage.rb
 lib/web_fetch/storage/memcached.rb
 lib/web_fetch/storage/memory.rb
+lib/web_fetch/storage/redis.rb
 lib/web_fetch/version.rb
 manifest
 spec/client_spec.rb
@@ -56,6 +56,9 @@ spec/retriever_spec.rb
 spec/router_spec.rb
 spec/server_spec.rb
 spec/spec_helper.rb
+spec/storage/memcached_spec.rb
 spec/storage/memory_spec.rb
+spec/storage/redis_spec.rb
+spec/storage/shared_examples.rb
 swagger.yaml
 web_fetch.gemspec
