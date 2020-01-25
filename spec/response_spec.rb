@@ -4,17 +4,19 @@ RSpec.describe WebFetch::Response do
   let(:response) do
     described_class.new(
       request: {
+        uid: 'uid123',
+        pending: false,
         response: {
           body: Base64.encode64('abc123'),
           headers: { 'Foo' => 'Bar' },
           error: 'foo error happened',
           status: 200,
+          response_time: 123.45,
           success: false
         },
-        pending: false,
-        request: { url: 'http://blah/' },
-        uid: 'uid123',
-        response_time: 123.45
+        request: {
+          request: { url: 'http://blah/' }
+        }
       }
     )
   end

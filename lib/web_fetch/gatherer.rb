@@ -118,7 +118,7 @@ module WebFetch
         headers: result.headers,
         status: result.response_header.status,
         response_time: response_time(request)
-      }.merge(success ? {} : { error: (result.error&.inspect) })
+      }.merge(success ? {} : { error: result.error&.inspect })
     end
   end
 end

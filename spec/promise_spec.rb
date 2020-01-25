@@ -48,7 +48,7 @@ RSpec.describe WebFetch::Promise do
           body: {
             request: {
               uid: 123,
-              request: {},
+              request: { request: {} },
               response: {
                 success: true, status: 200, body: 'abc123', headers: {}
               }
@@ -60,7 +60,7 @@ RSpec.describe WebFetch::Promise do
         body: {
           request: {
             uid: 123,
-            request: {},
+            request: { request: {} },
             response: {
               success: true, status: 200, body: 'abc123', headers: {}
             }
@@ -94,7 +94,9 @@ RSpec.describe WebFetch::Promise do
           body: {
             request: {
               uid: 123,
-              request: {},
+              request: {
+                request: {}
+              },
               response: {
                 success: true,
                 status: 200,
